@@ -13,7 +13,7 @@ function getEnv(key: string): string {
 export const env = {
   PORT: Number(process.env.PORT ?? 4000),
 
-  DATABASE_URL: getEnv("DATABASE_URL"),
+  MONGODB_URI: getEnv("MONGODB_URI"),
 
   JWT_SECRET: getEnv("JWT_SECRET"),
 
