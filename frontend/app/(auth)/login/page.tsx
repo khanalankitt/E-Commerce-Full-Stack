@@ -1,3 +1,5 @@
+export const dynamic = "force-static";
+
 import Image from "next/image";
 import Link from "next/link";
 import LoginFormComponent from "./LoginForm";
