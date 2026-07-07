@@ -13,6 +13,7 @@ function RegisterForm() {
           height={400}
           unoptimized
           width={400}
+          loading="eager"
           className="h-3/4 w-3/4 select-none"
         />
       </div>
