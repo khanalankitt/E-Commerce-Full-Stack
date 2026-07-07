@@ -1,10 +1,15 @@
 import { Schema, model } from "mongoose";
 
+export enum UserRole {
+  USER = "USER",
+  ADMIN = "ADMIN",
+}
+
 export interface IUser {
   name: string;
   email: string;
   password: string;
-  role: "USER" | "ADMIN";
+  role: UserRole;
 }
 
 const userSchema = new Schema<IUser>(
@@ -13,7 +18,7 @@ const userSchema = new Schema<IUser>(
       type: String,
       required: [true, "Name is required"],
       trim: true,
-      minlength: 2, 
+      minlength: 2,
       maxlength: 50,
     },
     email: {
@@ -31,8 +36,8 @@ const userSchema = new Schema<IUser>(
     },
     role: {
       type: String,
-      enum: ["USER", "ADMIN"],
-      default: "USER",
+      enum: Object.values(UserRole),
+      default: UserRole.USER,
     },
   },
   {
