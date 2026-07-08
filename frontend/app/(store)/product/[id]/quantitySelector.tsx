@@ -23,7 +23,7 @@ export default function QuantitySelector() {
 
       <button
         onClick={() => handleUpdate("-")}
-        className="h-10 w-10 rounded border hover:bg-gray-100 cursor-pointer"
+        className="h-10 text-xl w-10 rounded border hover:bg-gray-100 cursor-pointer"
       >
         -
       </button>
@@ -32,7 +32,7 @@ export default function QuantitySelector() {
 
       <button
         onClick={() => handleUpdate("+")}
-        className="h-10 w-10 rounded border hover:bg-gray-100 cursor-pointer"
+        className="h-10 text-xl w-10 rounded border hover:bg-gray-100 cursor-pointer"
       >
         +
       </button>
