@@ -1,18 +1,36 @@
 export const dynamic = "force-static";
+export const revalidate = 3600;
 
 import Image from "next/image";
 import QuantitySelector from "./quantitySelector";
 
-export default function ProductPage() {
-  const product = {
-    name: "Fresh Organic Apples",
-    description:
-      "Fresh, juicy organic apples sourced directly from local farms. Perfect for snacking, juices, and desserts.",
-    price: 299,
-    category: "Food Items",
-    stock: 12,
-    image: "/apples.jpg",
-  };
+type Props = {
+  params: Promise<{ id: string }>;
+};
+
+async function getProductDetails(id: string) {
+  const res = await fetch(
+    process.env.NEXT_PUBLIC_BACKEND_URL + `/products/${id}`,
+    {
+      next: {
+        revalidate: 3600,
+        tags: [`product-${id}`],
+      },
+    },
+  );
+
+  if (!res.ok) {
+    console.error("Failed to fetch featured products");
+    return [];
+  }
+
+  const json = await res.json();
+  return json.data;
+}
+
+export default async function Page({ params }: Props) {
+  const { id } = await params;
+  const data = await getProductDetails(id);
 
   const reviews = Math.floor(Math.random() * (35 - 15 + 1)) + 15;
   const sold = Math.floor(Math.random() * (60 - (reviews + 1))) + (reviews + 1);
@@ -23,10 +41,11 @@ export default function ProductPage() {
         <div className="flex-1 rounded-xl bg-white p-6 shadow">
           <div className="relative aspect-square w-full">
             <Image
-              src={product.image}
-              alt={product.name}
+              src={data.image}
+              alt={data.name}
               fill
-              loading="eager"
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              priority
               className="object-contain"
             />
           </div>
@@ -34,25 +53,25 @@ export default function ProductPage() {
 
         <div className="flex flex-1 flex-col gap-5">
           <span className="w-fit rounded-full bg-yellow-100 px-3 py-1 text-sm font-medium text-yellow-700">
-            {product.category}
+            {data.category.name}
           </span>
 
-          <h1 className="text-4xl font-bold text-gray-900">{product.name}</h1>
+          <h1 className="text-4xl font-bold text-gray-900">{data.name}</h1>
 
           <p className="text-3xl font-bold text-green-700 flex items-center justify-start gap-3">
-            Rs. {product.price}{" "}
+            Rs. {data.price}{" "}
             <span className="text-base text-gray-500 font-normal">
-              ⭐ 4.0 ({reviews}) <span className="text-gray-300">|</span> {sold}{" "}
-              sold
+              ⭐ {data.rating} ({reviews}){" "}
+              <span className="text-gray-300">|</span> {sold} sold
             </span>
           </p>
 
-          <p className="leading-7 text-gray-600">{product.description}</p>
+          <p className="leading-7 text-gray-600">{data.description}</p>
 
           <p className="text-sm">
             Availability:{" "}
             <span className="font-semibold text-green-700">
-              {product.stock} in stock
+              {data.stock} in stock
             </span>
           </p>
 
