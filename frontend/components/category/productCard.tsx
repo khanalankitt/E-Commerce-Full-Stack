@@ -1,20 +1,19 @@
 "use client";
-
 import { memo } from "react";
 import { ShoppingCartOutlined, StarFilled } from "@ant-design/icons";
 import Image from "next/image";
-import type { Product } from "@/app/(store)/category/[id]/page";
 import Link from "next/link";
+import { IProduct } from "@/app/types/product";
 
-function ProductCard({ product }: { product: Product }) {
+function ProductCard({ product }: { product: IProduct }) {
   return (
     <Link
-      href="/product/1"
+      href={`/product/${product._id}`}
       className="group bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden hover:shadow-lg transition"
     >
       <div className="relative bg-gray-100">
         <Image
-          src="/logo.png"
+          src={product.image}
           height={100}
           width={100}
           alt={product.name}
@@ -44,5 +43,5 @@ function ProductCard({ product }: { product: Product }) {
 // only re-renders if this specific product's id/price/rating/name changes
 export default memo(
   ProductCard,
-  (prev, next) => prev.product.id === next.product.id,
+  (prev, next) => prev.product._id === next.product._id,
 );

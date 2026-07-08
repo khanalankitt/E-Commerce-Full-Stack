@@ -6,25 +6,29 @@ export default function HeroCategories() {
     {
       name: "Electronics",
       url: "/electronics.png",
+      slug: "electronics",
     },
     {
       name: "Clothes",
       url: "/clothes.png",
+      slug: "clothes",
     },
     {
       name: "Food Items",
       url: "/food.png",
+      slug: "food-items",
     },
     {
       name: "Mobile and Laptops",
       url: "/laptops.png",
+      slug: "mobile-and-laptops",
     },
   ];
   return (
     <section className="h-screen w-full flex-wrap flex items-center justify-center gap-x-10 gap-y-0 px-10 py-5 mt-7">
       {categories.map((category, index) => (
         <Link
-          href="/category/1"
+          href={`/category/${category.slug}`}
           key={index}
           className="h-[45%] w-2/5 group rounded-xl shadow-sm flex cursor-pointer overflow-hidden relative"
         >

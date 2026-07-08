@@ -2,15 +2,15 @@
 
 import { useMemo, useState } from "react";
 import { StarFilled } from "@ant-design/icons";
-import type { Product } from "../../app/(store)/category/[id]/page";
 import { useDebounce } from "../../app/(store)/category/[id]/useDebounce";
 import ProductCard from "./productCard";
+import { IProduct } from "@/app/types/product";
 
 type SortOption = "newest" | "price-asc" | "price-desc" | "best-selling";
 
-export default function CategoryClient({ products }: { products: Product[] }) {
+export default function CategoryClient({ products }: { products: IProduct[] }) {
   const [search, setSearch] = useState("");
-  const [maxPrice, setMaxPrice] = useState(500);
+  const [maxPrice, setMaxPrice] = useState(50000);
   const [minRating, setMinRating] = useState<number | null>(null);
   const [sort, setSort] = useState<SortOption>("newest");
 
@@ -39,7 +39,7 @@ export default function CategoryClient({ products }: { products: Product[] }) {
         result.sort((a, b) => b.rating - a.rating);
         break;
       default:
-        result.sort((a, b) => a.id - b.id);
+        result.sort((a, b) => b.rating - a.rating);
     }
 
     return result;
@@ -53,6 +53,8 @@ export default function CategoryClient({ products }: { products: Product[] }) {
 
   const hasActiveFilters =
     search !== "" || maxPrice !== 500 || minRating !== null;
+
+  console.log(filtered);
 
   return (
     <div className="max-w-7xl w-full mx-auto px-5 py-10">
@@ -152,8 +154,8 @@ export default function CategoryClient({ products }: { products: Product[] }) {
             </p>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filtered.map((product) => (
-                <ProductCard key={product.id} product={product} />
+              {filtered.map((product, index) => (
+                <ProductCard key={index} product={product} />
               ))}
             </div>
           )}
