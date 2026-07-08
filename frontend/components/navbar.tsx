@@ -71,8 +71,9 @@ export default function NavBar() {
           </div>
           <p className="text-sm font-medium text-gray-800">Hi, Ankit!</p>
         </div>
-
-        <ShoppingCartOutlined className="text-3xl cursor-pointer p-2 transition-all rounded-full hover:bg-gray-100" />
+        <Link href="/cart">
+          <ShoppingCartOutlined className="text-3xl cursor-pointer p-2 transition-all rounded-full hover:bg-gray-100" />
+        </Link>
       </div>
     </nav>
   );
