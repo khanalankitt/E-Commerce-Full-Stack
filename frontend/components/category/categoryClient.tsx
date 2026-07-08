@@ -47,12 +47,12 @@ export default function CategoryClient({ products }: { products: IProduct[] }) {
 
   const handleReset = () => {
     setSearch("");
-    setMaxPrice(500);
+    setMaxPrice(50000);
     setMinRating(null);
   };
 
   const hasActiveFilters =
-    search !== "" || maxPrice !== 500 || minRating !== null;
+    search !== "" || maxPrice !== 50000 || minRating !== null;
 
   console.log(filtered);
 
@@ -81,7 +81,7 @@ export default function CategoryClient({ products }: { products: IProduct[] }) {
               <input
                 type="range"
                 min={0}
-                max={500}
+                max={50000}
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(Number(e.target.value))}
                 className="w-full cursor-pointer accent-green-700"
