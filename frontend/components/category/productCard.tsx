@@ -29,8 +29,8 @@ function ProductCard({ product }: { product: Product }) {
           ))}
         </div>
         <h3 className="font-semibold text-gray-800">{product.name}</h3>
-        <p className="text-green-700 text-lg font-bold mt-2">
-          Rs.{product.price}
+        <p className="text-green-700 text-sm font-bold mt-2">
+          Rs. <span className="text-lg"> {product.price}</span>
         </p>
         <button className="mt-4 w-full bg-green-700 hover:bg-green-800 text-white py-2.5 rounded-xl flex items-center justify-center gap-2 transition cursor-pointer">
           <ShoppingCartOutlined />

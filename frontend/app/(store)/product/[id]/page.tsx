@@ -14,6 +14,9 @@ export default function ProductPage() {
     image: "/apples.jpg",
   };
 
+  const reviews = Math.floor(Math.random() * (35 - 15 + 1)) + 15;
+  const sold = Math.floor(Math.random() * (60 - (reviews + 1))) + (reviews + 1);
+
   return (
     <main className="min-h-screen bg-gray-50 py-10 pt-20">
       <div className="mx-auto flex max-w-7xl flex-col gap-10 px-6 lg:flex-row">
@@ -36,8 +39,12 @@ export default function ProductPage() {
 
           <h1 className="text-4xl font-bold text-gray-900">{product.name}</h1>
 
-          <p className="text-3xl font-bold text-green-700">
-            Rs. {product.price}
+          <p className="text-3xl font-bold text-green-700 flex items-center justify-start gap-3">
+            Rs. {product.price}{" "}
+            <span className="text-base text-gray-500 font-normal">
+              ⭐ 4.0 ({reviews}) <span className="text-gray-300">|</span> {sold}{" "}
+              sold
+            </span>
           </p>
 
           <p className="leading-7 text-gray-600">{product.description}</p>
