@@ -3,11 +3,15 @@
 import { memo } from "react";
 import { ShoppingCartOutlined, StarFilled } from "@ant-design/icons";
 import Image from "next/image";
-import type { Product } from "./page";
+import type { Product } from "@/app/(store)/category/[id]/page";
+import Link from "next/link";
 
 function ProductCard({ product }: { product: Product }) {
   return (
-    <div className="group bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden hover:shadow-lg transition">
+    <Link
+      href="/product/1"
+      className="group bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden hover:shadow-lg transition"
+    >
       <div className="relative bg-gray-100">
         <Image
           src="/logo.png"
@@ -33,7 +37,7 @@ function ProductCard({ product }: { product: Product }) {
           Add to Cart
         </button>
       </div>
-    </div>
+    </Link>
   );
 }
 

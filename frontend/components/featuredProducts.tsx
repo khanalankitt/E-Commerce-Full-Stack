@@ -1,14 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
 
-export default function AllProducts() {
-  const allProducts = [1, 2, 3, 4, 5, 6, 4, 34, 0, 0, 0, 0];
+export default function FeaturedProducts() {
+  const featuredProducts = [
+    1, 2, 3, 4, 5, 6, 4, 34, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 9,
+  ];
+
   return (
     <section className="h-auto w-full flex items-center justify-center">
       <div className="w-4/5 flex flex-col ">
         <p className="text-3xl pb-10">Featured Products</p>
         <div className="h-auto w-full flex items-center justify-center flex-wrap gap-2 gap-y-3 pb-10">
-          {allProducts.map((product, index) => (
+          {featuredProducts.map((product, index) => (
             <Link
               href="/product/1"
               key={index}
