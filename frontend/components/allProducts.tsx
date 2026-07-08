@@ -2,11 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default function AllProducts() {
-  const allProducts = [1, 2, 3, 4, 5, 6, 4, 34, 0, 0];
+  const allProducts = [1, 2, 3, 4, 5, 6, 4, 34, 0, 0, 0, 0];
   return (
     <section className="h-auto w-full flex items-center justify-center">
       <div className="w-4/5 flex flex-col ">
-        <p className="text-3xl pb-10">All Products</p>
+        <p className="text-3xl pb-10">Featured Products</p>
         <div className="h-auto w-full flex items-center justify-center flex-wrap gap-2 gap-y-3 pb-10">
           {allProducts.map((product, index) => (
             <Link
@@ -39,7 +39,6 @@ export default function AllProducts() {
               </button>
             </Link>
           ))}
-          <p className="underline cursor-pointer self-end px-5">Show more</p>
         </div>
       </div>
     </section>

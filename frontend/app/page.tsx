@@ -2,6 +2,7 @@ export const dynamic = "force-static";
 export const revalidate = 3600;
 
 import AllProducts from "@/components/allProducts";
+import Footer from "@/components/footer";
 import HeroCategories from "@/components/heroCategories";
 import NavBar from "@/components/navbar";
 
@@ -11,6 +12,7 @@ export default function Home() {
       <NavBar />
       <HeroCategories />
       <AllProducts />
+      <Footer />
     </div>
   );
 }
