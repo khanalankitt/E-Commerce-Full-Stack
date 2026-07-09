@@ -4,6 +4,7 @@ import { ShoppingCartOutlined, StarFilled } from "@ant-design/icons";
 import Image from "next/image";
 import Link from "next/link";
 import { IProduct } from "@/app/types/product";
+import { addToCart } from "../addToCart";
 
 function ProductCard({ product }: { product: IProduct }) {
   return (
@@ -31,7 +32,10 @@ function ProductCard({ product }: { product: IProduct }) {
         <p className="text-green-700 text-sm font-bold mt-2">
           Rs. <span className="text-lg"> {product.price}</span>
         </p>
-        <button className="mt-4 w-full bg-green-700 hover:bg-green-800 text-white py-2.5 rounded-xl flex items-center justify-center gap-2 transition cursor-pointer">
+        <button
+          onClick={(e) => addToCart(e, product._id)}
+          className="mt-4 w-full bg-green-700 hover:bg-green-800 text-white py-2.5 rounded-xl flex items-center justify-center gap-2 transition cursor-pointer"
+        >
           <ShoppingCartOutlined />
           Add to Cart
         </button>

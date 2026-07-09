@@ -1,6 +1,7 @@
 import { IProduct } from "@/app/types/product";
 import Image from "next/image";
 import Link from "next/link";
+import AddToCartButton from "./featuredAddToCartButton";
 
 async function getFeaturedProducts() {
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/products", {
@@ -21,7 +22,6 @@ async function getFeaturedProducts() {
 
 export default async function FeaturedProducts() {
   const data = await getFeaturedProducts();
-
   return (
     <section className="h-auto w-full flex items-center justify-center">
       <div className="w-4/5 flex flex-col ">
@@ -54,12 +54,7 @@ export default async function FeaturedProducts() {
                   <span className="text-gray-300">|</span> 33 sold
                 </p>
               </div>
-              <button
-                className="absolute top-3 right-3 h-10 w-10 hidden rounded-full border-2 
-              border-green-700 justify-center items-center group-hover:flex p-1 bg-white backdrop-blur-sm cursor-pointer"
-              >
-                <p className="text-6xl font-extralight text-green-700">+</p>
-              </button>
+              <AddToCartButton productId={product._id} />
             </Link>
           ))}
         </div>

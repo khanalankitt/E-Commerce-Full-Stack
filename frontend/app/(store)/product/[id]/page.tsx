@@ -3,6 +3,7 @@ export const revalidate = 3600;
 
 import Image from "next/image";
 import QuantitySelector from "./quantitySelector";
+import ProductPageAddToCartButton from "@/components/productPageAddToCardButton";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -77,9 +78,7 @@ export default async function Page({ params }: Props) {
 
           <QuantitySelector />
 
-          <button className="mt-4 rounded-lg bg-green-700 px-8 py-3 font-semibold text-white transition hover:bg-green-800 cursor-pointer">
-            Add to Cart
-          </button>
+          <ProductPageAddToCartButton productId={data._id} />
         </div>
       </div>
     </main>
