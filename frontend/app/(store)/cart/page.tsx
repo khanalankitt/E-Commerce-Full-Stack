@@ -1,3 +1,5 @@
+import CartRemoveButton from "@/components/cart/cartRemoveButton";
+import ClearCartButton from "@/components/cart/clearCartButton";
 import { cookies } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
@@ -46,8 +48,16 @@ export default async function CartPage() {
   return (
     <div className="min-h-screen w-full mt-14">
       <div className="max-w-6xl mx-auto px-5 py-10">
-        <h1 className="text-3xl font-bold text-gray-800 mb-8">Your Cart</h1>
-
+        <div className="flex h-auto justify-start items-center">
+          <h1 className="text-3xl font-bold text-gray-800 mb-8 flex items-center justify-center gap-5">
+            Your Cart
+            {items.length != 0 && (
+              <span className="font-normal">
+                <ClearCartButton />
+              </span>
+            )}
+          </h1>
+        </div>
         {items.length === 0 ? (
           <div className="flex flex-col items-center justify-center text-gray-400 gap-4 py-24">
             <p className="text-5xl">🛒</p>
@@ -77,14 +87,11 @@ export default async function CartPage() {
                     />
                   </div>
 
-                  <div className="flex-1 flex flex-col justify-between">
+                  <div className="flex-1 flex flex-col justify-between relative">
                     <div className="flex justify-between items-start">
                       <h3 className="font-semibold text-gray-800">
                         {item.product.name}
                       </h3>
-                      <button className="text-gray-400 hover:text-red-500 transition cursor-pointer text-sm">
-                        Remove
-                      </button>
                     </div>
 
                     <p className="text-green-700 font-bold text-lg">
@@ -101,6 +108,11 @@ export default async function CartPage() {
                       <button className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-full hover:bg-gray-100 transition cursor-pointer">
                         +
                       </button>
+                      <div className="absolute bottom-1 right-0">
+                        <CartRemoveButton
+                          productId={String(item.product._id)}
+                        />
+                      </div>
                     </div>
                   </div>
 

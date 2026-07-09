@@ -1,7 +1,7 @@
 import { IProduct } from "@/app/types/product";
 import Image from "next/image";
 import Link from "next/link";
-import AddToCartButton from "./featuredAddToCartButton";
+import AddToCartButton from "./cart/featuredAddToCartButton";
 
 async function getFeaturedProducts() {
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/products", {

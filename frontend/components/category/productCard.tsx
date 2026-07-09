@@ -4,7 +4,7 @@ import { ShoppingCartOutlined, StarFilled } from "@ant-design/icons";
 import Image from "next/image";
 import Link from "next/link";
 import { IProduct } from "@/app/types/product";
-import { addToCart } from "../addToCart";
+import { addToCart } from "../cart/addToCart";
 
 function ProductCard({ product }: { product: IProduct }) {
   return (

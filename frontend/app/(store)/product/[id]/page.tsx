@@ -2,7 +2,7 @@ export const dynamic = "force-static";
 export const revalidate = 3600;
 
 import Image from "next/image";
-import ProductPageAddToCartButton from "@/components/productPageAddToCardButton";
+import ProductPageAddToCartButton from "@/components/cart/productPageAddToCardButton";
 
 type Props = {
   params: Promise<{ id: string }>;
