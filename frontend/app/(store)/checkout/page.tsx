@@ -1,28 +1,45 @@
+import { cookies } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
 interface CartItem {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
+  product: {
+    id: number;
+    name: string;
+    price: number;
+    image: string;
+  };
   quantity: number;
 }
 
-async function getCart(): Promise<CartItem[]> {
-  // replace with your real fetch from DB/API
-  return [
-    { id: 1, name: "Product 1", price: 99, image: "/logo.png", quantity: 2 },
-    { id: 2, name: "Product 4", price: 129, image: "/logo.png", quantity: 1 },
-  ];
+async function getCartItems(): Promise<CartItem[]> {
+  const cookieStore = await cookies();
+
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/cart`, {
+    headers: {
+      Cookie: cookieStore.toString(),
+    },
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    console.error("Failed to fetch cart items");
+    return [];
+  }
+
+  const json = await res.json();
+  return json.data?.items ?? [];
 }
 
 export default async function CheckoutPage() {
-  const items = await getCart();
-  const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  const items = await getCartItems();
   const shipping = 0;
+  const subtotal = items.reduce(
+    (sum, item) => sum + item.product.price * item.quantity,
+    0,
+  );
   const total = subtotal + shipping;
 
   return (
@@ -41,31 +58,37 @@ export default async function CheckoutPage() {
                 <input
                   type="text"
                   placeholder="Full Name"
+                  required
                   className="border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:border-green-600 sm:col-span-2"
                 />
                 <input
                   type="tel"
                   placeholder="Phone Number"
+                  required
                   className="border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:border-green-600"
                 />
                 <input
                   type="email"
                   placeholder="Email"
+                  required
                   className="border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:border-green-600"
                 />
                 <input
                   type="text"
                   placeholder="City"
+                  required
                   className="border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:border-green-600"
                 />
                 <input
                   type="text"
                   placeholder="Area / Locality"
+                  required
                   className="border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:border-green-600"
                 />
                 <textarea
                   placeholder="Full Address"
                   rows={3}
+                  required
                   className="border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:border-green-600 sm:col-span-2 resize-none"
                 />
               </div>
@@ -95,14 +118,15 @@ export default async function CheckoutPage() {
               <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
 
               <div className="flex flex-col gap-3 mb-4 max-h-64 overflow-y-auto">
-                {items.map((item) => (
-                  <div key={item.id} className="flex gap-3 items-center">
+                {items.map((item, index) => (
+                  <div key={index} className="flex gap-3 items-center">
                     <div className="w-14 h-14 relative bg-gray-100 rounded-lg shrink-0">
                       <Image
-                        src={item.image}
-                        alt={item.name}
-                        fill
-                        className="object-contain p-1"
+                        src={item.product.image}
+                        alt={item.product.name}
+                        height={60}
+                        width={60}
+                        className="object-contain p-1 rounded-xl"
                       />
                       <span className="absolute top-0 right-0 bg-green-700 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
                         {item.quantity}
@@ -110,12 +134,14 @@ export default async function CheckoutPage() {
                     </div>
                     <div className="flex-1">
                       <p className="text-sm font-medium text-gray-800">
-                        {item.name}
+                        {item.product.name}
                       </p>
-                      <p className="text-sm text-gray-500">Rs.{item.price}</p>
+                      <p className="text-sm text-gray-500">
+                        Rs.{item.product.price}
+                      </p>
                     </div>
-                    <p className="text-sm font-semibold text-gray-800">
-                      Rs.{item.price * item.quantity}
+                    <p className="text-sm font-semibold text-gray-800 pr-2">
+                      Rs.{item.product.price * item.quantity}
                     </p>
                   </div>
                 ))}
@@ -128,7 +154,7 @@ export default async function CheckoutPage() {
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Shipping</span>
-                  <span>Rs.{shipping}</span>
+                  <span>Free</span>
                 </div>
               </div>
 
