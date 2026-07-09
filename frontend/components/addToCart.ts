@@ -14,6 +14,7 @@ export const addToCart = async (
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ productId, quantity }),
+    credentials: "include",
   });
 
   if (!res.ok) {

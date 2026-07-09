@@ -1,12 +1,14 @@
 "use client";
 
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import Swal from "sweetalert2";
 
 export default function LoginFormComponent() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [hidden, setHidden] = useState(false);
-
+  const router = useRouter();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -32,9 +34,22 @@ export default function LoginFormComponent() {
 
       const data = await res.json();
       if (data.success) {
-        console.log("Login Succes!!");
+        await Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Login Succesfull",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        router.replace("/");
       } else {
-        console.log(data.message);
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Login failed \n " + data.message,
+          showConfirmButton: false,
+          timer: 1500,
+        });
       }
     } catch (error) {
       console.log("Error:", error);

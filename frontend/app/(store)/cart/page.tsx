@@ -1,49 +1,47 @@
+import { cookies } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
-interface CartItem {
-  id: number;
-  productId: number;
+interface CartProduct {
+  _id: string;
   name: string;
   price: number;
   image: string;
+}
+
+interface CartItem {
+  product: CartProduct;
   quantity: number;
 }
 
-async function getCart(): Promise<CartItem[]> {
-  // replace with your real fetch, e.g.:
-  // const res = await fetch(`${process.env.API_URL}/api/cart`, {
-  //   headers: { Cookie: cookies().toString() },
-  //   cache: "no-store",
-  // });
-  // return res.json();
+async function getCartItems(): Promise<CartItem[]> {
+  const cookieStore = await cookies();
 
-  // temporary mock data
-  return [
-    {
-      id: 1,
-      productId: 101,
-      name: "Product 1",
-      price: 99,
-      image: "/logo.png",
-      quantity: 2,
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/cart`, {
+    headers: {
+      Cookie: cookieStore.toString(),
     },
-    {
-      id: 2,
-      productId: 104,
-      name: "Product 4",
-      price: 129,
-      image: "/logo.png",
-      quantity: 1,
-    },
-  ];
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    console.error("Failed to fetch cart items");
+    return [];
+  }
+
+  const json = await res.json();
+  return json.data?.items ?? [];
 }
 
 export default async function CartPage() {
-  const items = await getCart();
-  const totalPrice = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  const items = await getCartItems();
+
+  const totalPrice = items.reduce(
+    (sum, item) => sum + item.product.price * item.quantity,
+    0,
+  );
 
   return (
     <div className="min-h-screen w-full mt-14">
@@ -67,13 +65,13 @@ export default async function CartPage() {
             <div className="flex-1 flex flex-col gap-4">
               {items.map((item) => (
                 <div
-                  key={item.id}
+                  key={item.product._id}
                   className="flex gap-4 bg-white border border-gray-200 rounded-2xl p-4 shadow-sm"
                 >
                   <div className="w-24 h-24 relative bg-gray-100 rounded-xl shrink-0">
                     <Image
-                      src={item.image}
-                      alt={item.name}
+                      src={item.product.image}
+                      alt={item.product.name}
                       fill
                       className="object-contain p-2 rounded-xl"
                     />
@@ -82,7 +80,7 @@ export default async function CartPage() {
                   <div className="flex-1 flex flex-col justify-between">
                     <div className="flex justify-between items-start">
                       <h3 className="font-semibold text-gray-800">
-                        {item.name}
+                        {item.product.name}
                       </h3>
                       <button className="text-gray-400 hover:text-red-500 transition cursor-pointer text-sm">
                         Remove
@@ -90,7 +88,7 @@ export default async function CartPage() {
                     </div>
 
                     <p className="text-green-700 font-bold text-lg">
-                      Rs.{item.price}
+                      Rs.{item.product.price}
                     </p>
 
                     <div className="flex items-center gap-3">
@@ -108,7 +106,7 @@ export default async function CartPage() {
 
                   <div className="text-right">
                     <p className="font-bold text-gray-800">
-                      Rs.{item.price * item.quantity}
+                      Rs.{item.product.price * item.quantity}
                     </p>
                   </div>
                 </div>
