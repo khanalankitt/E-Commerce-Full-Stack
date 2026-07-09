@@ -4,7 +4,7 @@ import { addToCart } from "./addToCart";
 
 export default function AddToCartButton({ productId }: { productId: string }) {
   async function handleClick(e: React.MouseEvent<HTMLButtonElement>) {
-    await addToCart(e, productId);
+    await addToCart(e, productId, 1);
   }
 
   return (

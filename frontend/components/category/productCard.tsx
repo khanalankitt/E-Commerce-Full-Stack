@@ -33,7 +33,7 @@ function ProductCard({ product }: { product: IProduct }) {
           Rs. <span className="text-lg"> {product.price}</span>
         </p>
         <button
-          onClick={(e) => addToCart(e, product._id)}
+          onClick={(e) => addToCart(e, product._id, 1)}
           className="mt-4 w-full bg-green-700 hover:bg-green-800 text-white py-2.5 rounded-xl flex items-center justify-center gap-2 transition cursor-pointer"
         >
           <ShoppingCartOutlined />

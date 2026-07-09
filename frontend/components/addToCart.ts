@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 export const addToCart = async (
   e: React.MouseEvent<HTMLButtonElement>,
   productId: string,
+  quantity: number,
 ) => {
   e.preventDefault();
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/cart/add", {
@@ -12,7 +13,7 @@ export const addToCart = async (
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(productId),
+    body: JSON.stringify({ productId, quantity }),
   });
 
   if (!res.ok) {

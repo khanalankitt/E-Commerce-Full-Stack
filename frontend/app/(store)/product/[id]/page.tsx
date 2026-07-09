@@ -2,7 +2,6 @@ export const dynamic = "force-static";
 export const revalidate = 3600;
 
 import Image from "next/image";
-import QuantitySelector from "./quantitySelector";
 import ProductPageAddToCartButton from "@/components/productPageAddToCardButton";
 
 type Props = {
@@ -75,8 +74,6 @@ export default async function Page({ params }: Props) {
               {data.stock} in stock
             </span>
           </p>
-
-          <QuantitySelector />
 
           <ProductPageAddToCartButton productId={data._id} />
         </div>
