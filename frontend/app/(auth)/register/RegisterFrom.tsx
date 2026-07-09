@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
+import Swal from "sweetalert2";
 
 export default function RegisterFormComponent() {
   const [form, setForm] = useState({
@@ -31,14 +32,35 @@ export default function RegisterFormComponent() {
       );
 
       if (!res.ok) {
-        console.log("Register failed!");
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Registration failed!",
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+        });
       }
 
       const data = await res.json();
       if (data.success) {
-        console.log("Register Succes!!");
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Registration Succesfull!",
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+        });
       } else {
-        console.log(data.message);
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Registration failed!",
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+        });
       }
     } catch (error) {
       console.log("Error:", error);

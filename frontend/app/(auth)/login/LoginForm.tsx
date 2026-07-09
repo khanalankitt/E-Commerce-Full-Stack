@@ -40,6 +40,7 @@ export default function LoginFormComponent() {
           title: "Login Succesfull",
           showConfirmButton: false,
           timer: 1500,
+          timerProgressBar: true,
         });
         router.replace("/");
       } else {
@@ -49,6 +50,7 @@ export default function LoginFormComponent() {
           title: "Login failed \n " + data.message,
           showConfirmButton: false,
           timer: 1500,
+          timerProgressBar: true,
         });
       }
     } catch (error) {

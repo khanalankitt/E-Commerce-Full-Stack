@@ -17,6 +17,19 @@ export const addToCart = async (
     credentials: "include",
   });
 
+  if (res.status === 401) {
+    await Swal.fire({
+      position: "center",
+      icon: "warning",
+      title: "Login to continue shopping!",
+      showConfirmButton: false,
+      timer: 1000,
+      timerProgressBar: true,
+    });
+    window.location.href = "/login";
+    return;
+  }
+
   if (!res.ok) {
     Swal.fire({
       position: "center",
@@ -24,6 +37,7 @@ export const addToCart = async (
       title: "Add to cart failed!",
       showConfirmButton: false,
       timer: 1000,
+      timerProgressBar: true,
     });
   }
 
@@ -36,6 +50,7 @@ export const addToCart = async (
       title: "Succesfully added to cart!",
       showConfirmButton: false,
       timer: 1000,
+      timerProgressBar: true,
     });
   }
 };
