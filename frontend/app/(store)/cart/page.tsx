@@ -87,7 +87,7 @@ export default async function CartPage() {
                     />
                   </div>
 
-                  <div className="flex-1 flex flex-col justify-between relative">
+                  <div className="flex-1 flex flex-col justify-between">
                     <div className="flex justify-between items-start">
                       <h3 className="font-semibold text-gray-800">
                         {item.product.name}
@@ -108,18 +108,16 @@ export default async function CartPage() {
                       <button className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-full hover:bg-gray-100 transition cursor-pointer">
                         +
                       </button>
-                      <div className="absolute bottom-1 right-0">
-                        <CartRemoveButton
-                          productId={String(item.product._id)}
-                        />
-                      </div>
                     </div>
                   </div>
 
-                  <div className="text-right">
+                  <div className="text-right relative">
                     <p className="font-bold text-gray-800">
                       Rs.{item.product.price * item.quantity}
                     </p>
+                    <div className="absolute bottom-1 right-1">
+                      <CartRemoveButton productId={String(item.product._id)} />
+                    </div>
                   </div>
                 </div>
               ))}

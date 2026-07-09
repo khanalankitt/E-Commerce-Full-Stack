@@ -38,7 +38,7 @@ export default function CartRemoveButton({ productId }: { productId: string }) {
         title: "Error",
         text: "Failed to remove item from cart",
         showConfirmButton: false,
-        timer: 1500,
+        timer: 1000,
         timerProgressBar: true,
       });
     }
@@ -51,7 +51,7 @@ export default function CartRemoveButton({ productId }: { productId: string }) {
         title: "Success",
         text: response.message,
         showConfirmButton: false,
-        timer: 1500,
+        timer: 1000,
         timerProgressBar: true,
       });
       window.location.reload();
@@ -62,7 +62,7 @@ export default function CartRemoveButton({ productId }: { productId: string }) {
         title: "Error",
         text: "Failed to remove item from cart",
         showConfirmButton: false,
-        timer: 1500,
+        timer: 1000,
         timerProgressBar: true,
       });
     }
@@ -75,6 +75,7 @@ export default function CartRemoveButton({ productId }: { productId: string }) {
     >
       <DeleteOutlined
         style={{ color: "red", fontSize: "20px", padding: "8px" }}
+        className="hover:bg-red-100 transition-all rounded-full"
       />
     </button>
   );
