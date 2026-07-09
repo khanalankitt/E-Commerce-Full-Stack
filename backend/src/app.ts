@@ -11,7 +11,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://jhatpat-kinmel.vercel.app/"],
+    origin: ["http://localhost:3000", "https://jhatpat-kinmel.vercel.app"],
     credentials: true,
   }),
 );

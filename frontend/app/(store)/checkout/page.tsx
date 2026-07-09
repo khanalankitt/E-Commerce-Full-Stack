@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
+import ShippingDetails from "@/components/shippingDetails";
 
 export const dynamic = "force-dynamic";
 
@@ -50,49 +51,7 @@ export default async function CheckoutPage() {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Left: Shipping + Payment */}
           <div className="flex-1 flex flex-col gap-6">
-            {/* Shipping Details */}
-            <div className="border border-gray-200 rounded-2xl p-6 shadow-sm bg-white">
-              <h2 className="text-lg font-semibold mb-4">Shipping Details</h2>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <input
-                  type="text"
-                  placeholder="Full Name"
-                  required
-                  className="border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:border-green-600 sm:col-span-2"
-                />
-                <input
-                  type="tel"
-                  placeholder="Phone Number"
-                  required
-                  className="border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:border-green-600"
-                />
-                <input
-                  type="email"
-                  placeholder="Email"
-                  required
-                  className="border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:border-green-600"
-                />
-                <input
-                  type="text"
-                  placeholder="City"
-                  required
-                  className="border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:border-green-600"
-                />
-                <input
-                  type="text"
-                  placeholder="Area / Locality"
-                  required
-                  className="border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:border-green-600"
-                />
-                <textarea
-                  placeholder="Full Address"
-                  rows={3}
-                  required
-                  className="border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:border-green-600 sm:col-span-2 resize-none"
-                />
-              </div>
-            </div>
+            <ShippingDetails />
 
             {/* Payment Method */}
             <div className="border border-gray-200 rounded-2xl p-6 shadow-sm bg-white">
@@ -163,9 +122,12 @@ export default async function CheckoutPage() {
                 <span className="text-green-700">Rs.{total}</span>
               </div>
 
-              <button className="w-full bg-green-700 hover:bg-green-800 text-white py-3 rounded-xl transition cursor-pointer font-medium">
+              <Link
+                href="/confirm"
+                className="w-full px-30 bg-green-700 hover:bg-green-800 text-white py-3 rounded-xl transition cursor-pointer font-medium"
+              >
                 Place Order
-              </button>
+              </Link>
 
               <Link
                 href="/cart"

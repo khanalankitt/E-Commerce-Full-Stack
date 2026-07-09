@@ -1,0 +1,298 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
+
+interface Address {
+  _id: string;
+  fullName: string;
+  phoneNumber: string;
+  email: string;
+  city: string;
+  area: string;
+  fullAddress: string;
+  isDefaultShippingAddress: boolean;
+}
+
+const emptyForm = {
+  fullName: "",
+  phoneNumber: "",
+  email: "",
+  city: "",
+  area: "",
+  fullAddress: "",
+  isDefaultShippingAddress: false,
+};
+
+export default function ShippingDetails() {
+  const [addresses, setAddresses] = useState<Address[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
+  const [selectedId, setSelectedId] = useState<string | "new" | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [form, setForm] = useState(emptyForm);
+
+  const fetchAddresses = async () => {
+    try {
+      const res = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_URL + "/addresses",
+        { credentials: "include" },
+      );
+      if (!res.ok) return;
+
+      const json = await res.json();
+      const data: Address[] = json.data ?? [];
+      setAddresses(data);
+
+      if (data.length > 0) {
+        const def = data.find((a) => a.isDefaultShippingAddress) ?? data[0];
+        selectAddress(def);
+      } else {
+        selectNew();
+      }
+    } catch (error) {
+      console.error("Failed to fetch addresses", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAddresses();
+  }, []);
+
+  const selectAddress = (address: Address) => {
+    setSelectedId(address._id);
+    setEditingId(null);
+    setForm({
+      fullName: address.fullName,
+      phoneNumber: address.phoneNumber,
+      email: address.email,
+      city: address.city,
+      area: address.area,
+      fullAddress: address.fullAddress,
+      isDefaultShippingAddress: address.isDefaultShippingAddress,
+    });
+  };
+
+  const selectNew = () => {
+    setSelectedId("new");
+    setEditingId(null);
+    setForm(emptyForm);
+  };
+
+  const startEdit = (address: Address) => {
+    setSelectedId(address._id);
+    setEditingId(address._id);
+    setForm({
+      fullName: address.fullName,
+      phoneNumber: address.phoneNumber,
+      email: address.email,
+      city: address.city,
+      area: address.area,
+      fullAddress: address.fullAddress,
+      isDefaultShippingAddress: address.isDefaultShippingAddress,
+    });
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name, value, type } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]:
+        type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
+    }));
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      const isEditing = editingId !== null;
+      const url = isEditing
+        ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/addresses/${editingId}`
+        : `${process.env.NEXT_PUBLIC_BACKEND_URL}/addresses`;
+
+      const res = await fetch(url, {
+        method: isEditing ? "PATCH" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+        credentials: "include",
+      });
+
+      if (!res.ok) {
+        const errJson = await res.json().catch(() => null);
+        throw new Error(errJson?.message ?? "Failed to save address");
+      }
+
+      const json = await res.json();
+      const saved: Address = json.data;
+
+      await Swal.fire({
+        icon: "success",
+        title: isEditing ? "Address updated" : "Address saved",
+        showConfirmButton: false,
+        timer: 1200,
+      });
+
+      await fetchAddresses();
+      selectAddress(saved);
+    } catch (error) {
+      console.error(error);
+      await Swal.fire({
+        icon: "error",
+        title: "Couldn't save address",
+        text: error instanceof Error ? error.message : undefined,
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="border border-gray-200 rounded-2xl p-6 shadow-sm bg-white">
+      <h2 className="text-lg font-semibold mb-4">Shipping Details</h2>
+
+      {/* Saved addresses */}
+      {!loading && addresses.length > 0 && (
+        <div className="flex flex-col gap-2 mb-5">
+          <p className="text-sm text-gray-500 mb-1">Saved addresses</p>
+          <div className="flex flex-wrap gap-2">
+            {addresses.map((address) => (
+              <div
+                key={address._id}
+                onClick={() => selectAddress(address)}
+                className={`relative flex flex-col gap-0.5 border rounded-xl px-4 py-2.5 cursor-pointer transition text-sm max-w-xs ${
+                  selectedId === address._id
+                    ? "border-green-600 bg-green-50"
+                    : "border-gray-300 hover:border-gray-400"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <span className="font-medium text-gray-800">
+                    {address.fullName}
+                  </span>
+                  {address.isDefaultShippingAddress && (
+                    <span className="text-[10px] uppercase tracking-wide bg-green-700 text-white px-1.5 py-0.5 rounded-full">
+                      Default
+                    </span>
+                  )}
+                </div>
+                <span className="text-gray-500 truncate">
+                  {address.area}, {address.city}
+                </span>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    startEdit(address);
+                  }}
+                  className="absolute top-1.5 right-2 text-xs text-green-700 hover:underline cursor-pointer"
+                >
+                  Edit
+                </button>
+              </div>
+            ))}
+
+            <div
+              onClick={selectNew}
+              className={`flex items-center justify-center border border-dashed rounded-xl px-4 py-2.5 cursor-pointer transition text-sm font-medium ${
+                selectedId === "new"
+                  ? "border-green-600 text-green-700 bg-green-50"
+                  : "border-gray-300 text-gray-500 hover:border-gray-400"
+              }`}
+            >
+              + New Address
+            </div>
+          </div>
+        </div>
+      )}
+
+      {editingId && (
+        <p className="text-xs text-amber-600 mb-3">
+          Editing saved address — saving will update it in place.
+        </p>
+      )}
+
+      {/* Form */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <input
+          type="text"
+          name="fullName"
+          placeholder="Full Name"
+          required
+          value={form.fullName}
+          onChange={handleChange}
+          className="border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:border-green-600 sm:col-span-2"
+        />
+        <input
+          type="tel"
+          name="phoneNumber"
+          placeholder="Phone Number"
+          required
+          value={form.phoneNumber}
+          onChange={handleChange}
+          className="border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:border-green-600"
+        />
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          required
+          value={form.email}
+          onChange={handleChange}
+          className="border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:border-green-600"
+        />
+        <input
+          type="text"
+          name="city"
+          placeholder="City"
+          required
+          value={form.city}
+          onChange={handleChange}
+          className="border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:border-green-600"
+        />
+        <input
+          type="text"
+          name="area"
+          placeholder="Area / Locality"
+          required
+          value={form.area}
+          onChange={handleChange}
+          className="border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:border-green-600"
+        />
+        <textarea
+          name="fullAddress"
+          placeholder="Full Address"
+          rows={3}
+          required
+          value={form.fullAddress}
+          onChange={handleChange}
+          className="border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:border-green-600 sm:col-span-2 resize-none"
+        />
+
+        <label className="flex items-center gap-2 text-sm text-gray-600 sm:col-span-2">
+          <input
+            type="checkbox"
+            name="isDefaultShippingAddress"
+            checked={form.isDefaultShippingAddress}
+            onChange={handleChange}
+            className="cursor-pointer"
+          />
+          Set as default shipping address
+        </label>
+      </div>
+
+      <button
+        type="button"
+        onClick={handleSave}
+        disabled={saving}
+        className="mt-5 bg-green-700 hover:bg-green-800 disabled:opacity-60 disabled:cursor-not-allowed text-white px-6 py-2.5 rounded-lg transition cursor-pointer font-medium text-sm"
+      >
+        {saving ? "Saving..." : editingId ? "Update Address" : "Save Address"}
+      </button>
+    </div>
+  );
+}
