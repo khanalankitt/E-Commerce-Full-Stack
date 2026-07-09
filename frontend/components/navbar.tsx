@@ -78,7 +78,26 @@ export default function NavBar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const handleLogoutConfirm = async (): Promise<boolean> => {
+    const result = await Swal.fire({
+      title: "You are logging out",
+      text: "Are you sure you want to logout?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, logout",
+    });
+
+    return result.isConfirmed;
+  };
+
   const handleLogout = async () => {
+    const confirmed = await handleLogoutConfirm();
+    if (!confirmed) {
+      return;
+    }
+
     try {
       await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/auth/logout", {
         method: "POST",
@@ -94,19 +113,20 @@ export default function NavBar() {
         timerProgressBar: true,
       });
       console.error("Logout failed", error);
-    } finally {
-      setUser(null);
-      setDropdownOpen(false);
-      await Swal.fire({
-        position: "center",
-        icon: "success",
-        title: "Logout Succesfull!",
-        showConfirmButton: false,
-        timer: 1500,
-        timerProgressBar: true,
-      });
-      window.location.href = "/";
+      return;
     }
+
+    setUser(null);
+    setDropdownOpen(false);
+    await Swal.fire({
+      position: "center",
+      icon: "success",
+      title: "Logout Successful!",
+      showConfirmButton: false,
+      timer: 1500,
+      timerProgressBar: true,
+    });
+    window.location.href = "/";
   };
 
   return (

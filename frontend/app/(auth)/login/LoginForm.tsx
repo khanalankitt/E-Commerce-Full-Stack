@@ -29,7 +29,14 @@ export default function LoginFormComponent() {
       );
 
       if (!res.ok) {
-        console.log("Login failed!");
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Login failed",
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+        });
       }
 
       const data = await res.json();
@@ -47,7 +54,8 @@ export default function LoginFormComponent() {
         Swal.fire({
           position: "center",
           icon: "error",
-          title: "Login failed \n " + data.message,
+          title: "Login failed",
+          text: data.message,
           showConfirmButton: false,
           timer: 1500,
           timerProgressBar: true,

@@ -10,7 +10,7 @@ export const authenticate = async (
 ) => {
   try {
     const token = req.cookies.token;
-    
+
     if (!token) {
       return res.status(401).json({
         success: false,
@@ -20,8 +20,7 @@ export const authenticate = async (
 
     const payload = verifyToken(token);
 
-    const user = await User.findById(payload.id);
-
+    const user = await User.findById(payload.id).select("-password");
     if (!user) {
       return res.status(401).json({
         success: false,

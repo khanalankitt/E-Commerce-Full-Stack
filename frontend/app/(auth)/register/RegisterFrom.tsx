@@ -57,6 +57,7 @@ export default function RegisterFormComponent() {
           position: "center",
           icon: "error",
           title: "Registration failed!",
+          text: data.message,
           showConfirmButton: false,
           timer: 1500,
           timerProgressBar: true,
