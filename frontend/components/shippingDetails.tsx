@@ -28,6 +28,7 @@ export default function ShippingDetails() {
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState<string | null>(null);
 
   const [selectedId, setSelectedId] = useState<string | "new" | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -107,6 +108,57 @@ export default function ShippingDetails() {
     }));
   };
 
+  const handleDelete = async (addressId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    const result = await Swal.fire({
+      title: "Delete Address?",
+      text: "This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Delete",
+      cancelButtonText: "Cancel",
+    });
+
+    if (!result.isConfirmed) return;
+
+    setDeleting(addressId);
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/addresses/${addressId}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        },
+      );
+
+      if (!res.ok) {
+        const errJson = await res.json().catch(() => null);
+        throw new Error(errJson?.message ?? "Failed to delete address");
+      }
+
+      await Swal.fire({
+        icon: "success",
+        title: "Address deleted",
+        showConfirmButton: false,
+        timer: 1200,
+      });
+
+      await fetchAddresses();
+    } catch (error) {
+      console.error(error);
+      await Swal.fire({
+        icon: "error",
+        title: "Couldn't delete address",
+        text: error instanceof Error ? error.message : undefined,
+      });
+    } finally {
+      setDeleting(null);
+    }
+  };
+
   const handleSave = async () => {
     setSaving(true);
     try {
@@ -151,6 +203,9 @@ export default function ShippingDetails() {
     }
   };
 
+  // Determine if we should show the save button
+  const showSaveButton = selectedId === "new" || editingId !== null;
+
   return (
     <div className="border border-gray-200 rounded-2xl p-6 shadow-sm bg-white">
       <h2 className="text-lg font-semibold mb-4">Shipping Details</h2>
@@ -183,16 +238,26 @@ export default function ShippingDetails() {
                 <span className="text-gray-500 truncate">
                   {address.area}, {address.city}
                 </span>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    startEdit(address);
-                  }}
-                  className="absolute top-1.5 right-2 text-xs text-green-700 hover:underline cursor-pointer"
-                >
-                  Edit
-                </button>
+                <div className="absolute top-1.5 right-2 flex gap-1">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      startEdit(address);
+                    }}
+                    className="text-xs text-green-700 hover:underline cursor-pointer"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => handleDelete(address._id, e)}
+                    disabled={deleting === address._id}
+                    className="text-xs text-red-600 hover:underline cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {deleting === address._id ? "..." : "Delete"}
+                  </button>
+                </div>
               </div>
             ))}
 
@@ -285,14 +350,17 @@ export default function ShippingDetails() {
         </label>
       </div>
 
-      <button
-        type="button"
-        onClick={handleSave}
-        disabled={saving}
-        className="mt-5 bg-green-700 hover:bg-green-800 disabled:opacity-60 disabled:cursor-not-allowed text-white px-6 py-2.5 rounded-lg transition cursor-pointer font-medium text-sm"
-      >
-        {saving ? "Saving..." : editingId ? "Update Address" : "Save Address"}
-      </button>
+      {/* Save button - only shown when adding new or editing existing address */}
+      {showSaveButton && (
+        <button
+          type="button"
+          onClick={handleSave}
+          disabled={saving}
+          className="mt-5 bg-green-700 hover:bg-green-800 disabled:opacity-60 disabled:cursor-not-allowed text-white px-6 py-2.5 rounded-lg transition cursor-pointer font-medium text-sm"
+        >
+          {saving ? "Saving..." : editingId ? "Update Address" : "Save Address"}
+        </button>
+      )}
     </div>
   );
 }
