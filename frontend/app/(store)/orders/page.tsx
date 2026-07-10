@@ -105,7 +105,8 @@ export default async function OrdersPage() {
                           <Image
                             src={item.product.image}
                             alt={item.product.name}
-                            fill
+                            height={50}
+                            width={50}
                             className="object-contain p-1 rounded-lg"
                           />
                         </div>

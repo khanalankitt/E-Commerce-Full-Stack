@@ -49,7 +49,7 @@ export const addToCart = async (
       icon: "success",
       title: "Succesfully added to cart!",
       showConfirmButton: false,
-      timer: 1000,
+      timer: 700,
       timerProgressBar: true,
     });
   }

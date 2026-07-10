@@ -82,16 +82,20 @@ export default async function CartPage() {
                     <Image
                       src={item.product.image}
                       alt={item.product.name}
-                      fill
+                      height={120}
+                      width={120}
                       className="object-contain p-2 rounded-xl"
                     />
                   </div>
 
                   <div className="flex-1 flex flex-col justify-between">
                     <div className="flex justify-between items-start">
-                      <h3 className="font-semibold text-gray-800">
+                      <Link
+                        href={`/product/${item.product._id}`}
+                        className="font-semibold text-gray-800"
+                      >
                         {item.product.name}
-                      </h3>
+                      </Link>
                     </div>
 
                     <p className="text-green-700 font-bold text-lg">
