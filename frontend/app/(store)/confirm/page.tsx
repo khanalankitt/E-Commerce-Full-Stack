@@ -1,14 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import Swal from "sweetalert2";
-import { useState } from "react";
 
 export default function PlaceOrderButton() {
-  const [loading, setLoading] = useState(false);
-
   const handlePlaceOrder = async () => {
-    setLoading(true);
-
     try {
       const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/orders", {
         method: "POST",
@@ -35,18 +31,16 @@ export default function PlaceOrderButton() {
         title: "Something went wrong",
         text: "Could not place your order. Please try again.",
       });
-    } finally {
-      setLoading(false);
     }
   };
 
   return (
-    <button
+    <Link
+      href="/confirm"
       onClick={handlePlaceOrder}
-      disabled={loading}
-      className="w-full bg-green-700 mt-20 hover:bg-green-800 disabled:opacity-60 disabled:cursor-not-allowed text-white py-3 rounded-xl transition cursor-pointer font-medium"
+      className="w-full bg-green-700 block text-center hover:bg-green-800 disabled:opacity-60 disabled:cursor-not-allowed text-white py-3 rounded-xl transition cursor-pointer font-medium"
     >
-      {loading ? "Placing order..." : "Confirm & Place Order"}
-    </button>
+      Confirm Order
+    </Link>
   );
 }

@@ -144,7 +144,7 @@ export default async function CartPage() {
 
                 <Link
                   href="/checkout"
-                  className="w-full bg-green-700 hover:bg-green-800 text-white py-3 px-14 rounded-xl transition cursor-pointer font-medium"
+                  className="w-full bg-green-700 hover:bg-green-800 text-white py-3 block text-center rounded-xl transition cursor-pointer font-medium"
                 >
                   Proceed to Checkout
                 </Link>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useShipping } from "@/app/contexts/shippingContext";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
@@ -25,12 +26,12 @@ const emptyForm = {
 };
 
 export default function ShippingDetails() {
-  const [addresses, setAddresses] = useState<Address[]>([]);
+  const { addresses, setAddresses, selectedAddressId, setSelectedAddressId } =
+    useShipping();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
 
-  const [selectedId, setSelectedId] = useState<string | "new" | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState(emptyForm);
 
@@ -64,7 +65,7 @@ export default function ShippingDetails() {
   }, []);
 
   const selectAddress = (address: Address) => {
-    setSelectedId(address._id);
+    setSelectedAddressId(address._id);
     setEditingId(null);
     setForm({
       fullName: address.fullName,
@@ -78,13 +79,13 @@ export default function ShippingDetails() {
   };
 
   const selectNew = () => {
-    setSelectedId("new");
+    setSelectedAddressId("new");
     setEditingId(null);
     setForm(emptyForm);
   };
 
   const startEdit = (address: Address) => {
-    setSelectedId(address._id);
+    setSelectedAddressId(address._id);
     setEditingId(address._id);
     setForm({
       fullName: address.fullName,
@@ -204,7 +205,7 @@ export default function ShippingDetails() {
   };
 
   // Determine if we should show the save button
-  const showSaveButton = selectedId === "new" || editingId !== null;
+  const showSaveButton = selectedAddressId === "new" || editingId !== null;
 
   return (
     <div className="border border-gray-200 rounded-2xl p-6 shadow-sm bg-white">
@@ -220,7 +221,7 @@ export default function ShippingDetails() {
                 key={address._id}
                 onClick={() => selectAddress(address)}
                 className={`relative flex flex-col gap-0.5 border rounded-xl px-4 py-2.5 cursor-pointer transition text-sm max-w-xs ${
-                  selectedId === address._id
+                  selectedAddressId === address._id
                     ? "border-green-600 bg-green-50"
                     : "border-gray-300 hover:border-gray-400"
                 }`}
@@ -264,7 +265,7 @@ export default function ShippingDetails() {
             <div
               onClick={selectNew}
               className={`flex items-center justify-center border border-dashed rounded-xl px-4 py-2.5 cursor-pointer transition text-sm font-medium ${
-                selectedId === "new"
+                selectedAddressId === "new"
                   ? "border-green-600 text-green-700 bg-green-50"
                   : "border-gray-300 text-gray-500 hover:border-gray-400"
               }`}
