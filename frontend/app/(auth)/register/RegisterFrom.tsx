@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
 
 export default function RegisterFormComponent() {
   const [form, setForm] = useState({
@@ -11,6 +12,8 @@ export default function RegisterFormComponent() {
     password: "",
   });
   const [hidden, setHidden] = useState(false);
+
+  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -44,7 +47,7 @@ export default function RegisterFormComponent() {
 
       const data = await res.json();
       if (data.success) {
-        Swal.fire({
+        await Swal.fire({
           position: "center",
           icon: "success",
           title: "Registration Succesfull!",
@@ -52,6 +55,8 @@ export default function RegisterFormComponent() {
           timer: 1500,
           timerProgressBar: true,
         });
+        setForm({ name: "", email: "", password: "" });
+        router.replace("/");
       } else {
         Swal.fire({
           position: "center",

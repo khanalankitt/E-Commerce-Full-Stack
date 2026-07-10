@@ -6,11 +6,22 @@ class AuthController {
     try {
       const { name, email, password } = req.body;
 
-      const data = await authService.register({ name, email, password });
+      const { user, token } = await authService.register({
+        name,
+        email,
+        password,
+      });
+
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
 
       res.status(201).json({
         success: true,
-        data,
+        data: user,
       });
     } catch (error) {
       next(error);
