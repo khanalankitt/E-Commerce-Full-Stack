@@ -24,7 +24,7 @@ export default function CartRemoveButton({ productId }: { productId: string }) {
       return;
     }
     const res = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_URL + `/cart/${productId}`,
+      `/api/cart/${productId}`,
       {
         method: "DELETE",
         credentials: "include",

@@ -22,7 +22,7 @@ export default function ConfirmOrderButton() {
 
     setLoading(true);
     try {
-      const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/orders", {
+      const res = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ addressId: selectedAddressId }),

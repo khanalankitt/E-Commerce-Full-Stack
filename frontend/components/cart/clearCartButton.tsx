@@ -23,7 +23,7 @@ export default function ClearCartButton() {
     if (!confirmed) {
       return;
     }
-    const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/cart`, {
+    const res = await fetch(`/api/cart`, {
       method: "DELETE",
       credentials: "include",
     });
