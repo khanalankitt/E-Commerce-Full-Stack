@@ -44,6 +44,27 @@ class CartService {
 
     return clearedCart;
   }
+
+  async updateQuantity(userId: string, productId: string, quantity: number) {
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      throw new Error("Invalid product ID");
+    }
+    if (quantity < 1) {
+      throw new Error("Quantity must be at least 1");
+    }
+
+    const updatedCart = await CartRepository.updateQuantity(
+      userId,
+      productId,
+      quantity,
+    );
+
+    if (!updatedCart) {
+      throw new Error("Item not found in cart");
+    }
+
+    return updatedCart;
+  }
 }
 
 export default new CartService();

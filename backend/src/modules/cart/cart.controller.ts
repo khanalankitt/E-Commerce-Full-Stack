@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import CartService from "./cart.service.js";
+import { updateQuantitySchema } from "./cart.validation.js";
 
 class CartController {
   async get(req: Request, res: Response, next: NextFunction) {
@@ -64,6 +65,28 @@ class CartController {
       res.status(200).json({
         success: true,
         message: "Cart cleared",
+        data: cart,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async updateQuantity(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = String(req.user?._id);
+      const { productId } = req.params;
+      const { quantity } = updateQuantitySchema.parse(req.body);
+
+      const cart = await CartService.updateQuantity(
+        userId,
+        String(productId),
+        quantity,
+      );
+
+      res.status(200).json({
+        success: true,
+        message: "Quantity updated",
         data: cart,
       });
     } catch (error) {

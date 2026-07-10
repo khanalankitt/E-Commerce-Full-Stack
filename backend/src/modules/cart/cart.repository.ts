@@ -41,6 +41,14 @@ class CartRepository {
       { returnDocument: "after" },
     );
   }
+
+  async updateQuantity(userId: string, productId: string, quantity: number) {
+    return Cart.findOneAndUpdate(
+      { user: userId, "items.product": productId },
+      { $set: { "items.$.quantity": quantity } },
+      { returnDocument: "after" },
+    ).populate("items.product");
+  }
 }
 
 export default new CartRepository();
