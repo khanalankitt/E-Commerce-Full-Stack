@@ -192,6 +192,13 @@ export default function NavBar() {
                 >
                   Profile
                 </Link>
+                <Link
+                  href="/orders"
+                  onClick={() => setDropdownOpen(false)}
+                  className="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 transition-colors"
+                >
+                  Orders
+                </Link>
                 <button
                   onClick={handleLogout}
                   className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 transition-colors cursor-pointer"
