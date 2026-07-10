@@ -43,7 +43,8 @@ export default function PlaceOrderFinalButton({
         title: "Order placed!",
         text: "Thank you — your order is now being processed.",
         showConfirmButton: false,
-        timer: 1800,
+        timer: 1500,
+        timerProgressBar: true,
       });
 
       window.location.href = `/orders/${orderId}`;
