@@ -74,10 +74,9 @@ class CartController {
 
   async updateQuantity(req: Request, res: Response, next: NextFunction) {
     try {
-      const userId = String(req.user?._id);
+      const userId = req.user?._id;
       const { productId } = req.params;
       const { quantity } = updateQuantitySchema.parse(req.body);
-
       const cart = await CartService.updateQuantity(
         userId,
         String(productId),

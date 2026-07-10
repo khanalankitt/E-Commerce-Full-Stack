@@ -1,5 +1,6 @@
 import CartRemoveButton from "@/components/cart/cartRemoveButton";
 import ClearCartButton from "@/components/cart/clearCartButton";
+import QuantityUpdateButton from "@/components/cart/quantityUpdateButtons";
 import { cookies } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
@@ -102,17 +103,10 @@ export default async function CartPage() {
                       Rs.{item.product.price}
                     </p>
 
-                    <div className="flex items-center gap-3">
-                      <button className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-full hover:bg-gray-100 transition cursor-pointer">
-                        −
-                      </button>
-                      <span className="font-medium w-5 text-center">
-                        {item.quantity}
-                      </span>
-                      <button className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-full hover:bg-gray-100 transition cursor-pointer">
-                        +
-                      </button>
-                    </div>
+                    <QuantityUpdateButton
+                      productId={item.product._id}
+                      quantity={item.quantity}
+                    />
                   </div>
 
                   <div className="text-right relative">

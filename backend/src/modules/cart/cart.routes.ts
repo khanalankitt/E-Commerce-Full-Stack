@@ -4,10 +4,12 @@ import { authenticate } from "../../middlewares/auth.middleware.js";
 
 const router = Router();
 
-router.get("/", authenticate, CartController.get);
-router.post("/add", authenticate, CartController.add);
-router.delete("/:productId", authenticate, CartController.delete);
-router.delete("/", authenticate, CartController.deleteAll);
+router.use(authenticate);
+
+router.get("/", CartController.get);
+router.post("/add", CartController.add);
+router.delete("/:productId", CartController.delete);
+router.delete("/", CartController.deleteAll);
 router.patch("/:productId", CartController.updateQuantity);
 
 export default router;
