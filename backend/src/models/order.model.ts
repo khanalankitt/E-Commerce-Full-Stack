@@ -16,6 +16,7 @@ export enum OrderStatus {
 
 export interface IOrder {
   user: Types.ObjectId;
+  address: Types.ObjectId;
   items: IOrderItem[];
   totalAmount: number;
   status: OrderStatus;
@@ -49,6 +50,11 @@ const orderSchema = new Schema<IOrder>(
       ref: "User",
       required: true,
     },
+    address: {
+      type: Schema.Types.ObjectId,
+      ref: "Address",
+      required: true,
+    },
     items: {
       type: [orderItemSchema],
       required: true,
@@ -68,5 +74,7 @@ const orderSchema = new Schema<IOrder>(
     timestamps: true,
   },
 );
+
+orderSchema.index({ user: 1, createdAt: -1 });
 
 export const Order = model<IOrder>("Order", orderSchema);
