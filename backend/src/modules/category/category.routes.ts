@@ -11,7 +11,6 @@ router.get("/:id", categoryController.getOne);
 router.get("/:id/products", categoryController.getProductsByCategory);
 router.get("/products/:slug", categoryController.getProductsByCategorySlug);
 
-// Public routes
 router.post(
   "/",
   authenticate,

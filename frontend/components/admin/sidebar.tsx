@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Package, Tag, UserCircle, Zap } from "lucide-react";
@@ -24,6 +23,7 @@ export default function Sidebar() {
 
   return (
     <div
+      className="absolute h-screen overflow-hidden top-0 left-0"
       style={{
         fontFamily: "'Inter', sans-serif",
         background: "#FAFAF8",
@@ -98,6 +98,9 @@ export default function Sidebar() {
             );
           })}
         </nav>
+        <button className="mt-auto bg-red-500 text-white cursor-pointer rounded-md w-full p-1">
+          Logout
+        </button>
       </aside>
     </div>
   );

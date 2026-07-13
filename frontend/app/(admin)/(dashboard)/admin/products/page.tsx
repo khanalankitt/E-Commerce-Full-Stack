@@ -33,7 +33,10 @@ const emptyForm: ProductFormState = {
 };
 
 const fmt = (n: number): string => "Rs. " + n.toLocaleString("en-IN");
-
+export interface ApiResponse<T> {
+  data: T;
+  message?: string;
+}
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -47,8 +50,10 @@ export default function ProductsPage() {
     setLoading(true);
     Promise.all([getProducts(), getCategories()])
       .then(([p, c]) => {
-        setProducts(p);
-        setCategories(c);
+        //@ts-ignore
+        setProducts(p.data);
+        //@ts-ignore
+        setCategories(c.data);
       })
       .catch((err: Error) =>
         Swal.fire({
@@ -164,15 +169,14 @@ export default function ProductsPage() {
       });
     }
   };
-
   return (
-    <div>
+    <div className="h-screen overflow-y-scroll pt-5">
       <div
         style={{
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          marginBottom: 20,
+          paddingBottom: 20,
         }}
       >
         <div>
@@ -189,6 +193,7 @@ export default function ProductsPage() {
       </div>
 
       <div
+        className="mb-10 "
         style={{
           background: "#fff",
           border: "1px solid #E8E6E1",
@@ -244,7 +249,7 @@ export default function ProductsPage() {
                 <th style={{ ...thStyle, textAlign: "right" }}>Actions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="overflow-y-scroll">
               {products.map((p) => (
                 <tr key={p._id} style={{ borderTop: "1px solid #F0EEE9" }}>
                   <td style={tdStyle}>
@@ -262,7 +267,7 @@ export default function ProductsPage() {
                   </td>
                   <td style={tdStyle}>{p.name}</td>
                   <td style={{ ...tdStyle, color: "#6B6B76" }}>
-                    {p.category.name ?? "—"}
+                    {p.category?.name ?? "—"}
                   </td>
                   <td
                     style={{ ...tdStyle, textAlign: "right", fontWeight: 600 }}

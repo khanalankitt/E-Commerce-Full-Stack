@@ -1,13 +1,7 @@
-import type {
-  AdminAccount,
-  Category,
-  DashboardStats,
-  Product,
-} from "./types";
+import type { AdminAccount, Category, DashboardStats, Product } from "./types";
 
-// Assumes Next.js rewrites /api/* to your Express backend, same pattern
-// you're already using for the cross-domain cookie/auth proxy.
-const BASE = "/api/admin";
+// const BASE = "/api/admin";
+const BASE = process.env.NEXT_PUBLIC_BACKEND_URL ;
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE}${path}`, {
@@ -42,7 +36,7 @@ export const updateProduct = (
   id: string,
   formData: FormData,
 ): Promise<Product> =>
-  request<Product>(`/products/${id}`, { method: "PUT", body: formData });
+  request<Product>(`/products/${id}`, { method: "PATCH", body: formData });
 
 export const deleteProduct = (id: string): Promise<void> =>
   request<void>(`/products/${id}`, { method: "DELETE" });

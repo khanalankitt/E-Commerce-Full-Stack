@@ -8,7 +8,7 @@ export default function StoreLayout({
   return (
     <>
       <Sidebar />
-      <main>{children}</main>
+      <main className="pl-60 pr-5">{children}</main>
     </>
   );
 }
