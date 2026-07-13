@@ -75,7 +75,7 @@ export default function ProductsPage() {
       description: product.description,
       price: String(product.price),
       stock: String(product.stock),
-      categoryId: product.categoryId,
+      categoryId: product.category.categoryId,
       imageFile: null,
     });
     setModalOpen(true);
@@ -262,7 +262,7 @@ export default function ProductsPage() {
                   </td>
                   <td style={tdStyle}>{p.name}</td>
                   <td style={{ ...tdStyle, color: "#6B6B76" }}>
-                    {p.categoryName ?? "—"}
+                    {p.category.name ?? "—"}
                   </td>
                   <td
                     style={{ ...tdStyle, textAlign: "right", fontWeight: 600 }}

@@ -2,9 +2,9 @@
 
 import { useMemo, useState } from "react";
 import { StarFilled } from "@ant-design/icons";
-import { useDebounce } from "../../app/(store)/category/[id]/useDebounce";
 import ProductCard from "./productCard";
 import { IProduct } from "@/app/types/product";
+import { useDebounce } from "@/app/(user)/(store)/category/[id]/useDebounce";
 
 type SortOption = "newest" | "price-asc" | "price-desc" | "best-selling";
 

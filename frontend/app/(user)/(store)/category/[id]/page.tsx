@@ -1,4 +1,4 @@
-import CategoryClient from "../../../../components/category/categoryClient";
+import CategoryClient from "@/components/category/categoryClient";
 
 export const revalidate = 3600;
 export const dynamic = "force-static";

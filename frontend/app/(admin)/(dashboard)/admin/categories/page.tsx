@@ -212,19 +212,7 @@ export default function CategoriesPage() {
             <tbody>
               {categories.map((c) => (
                 <tr key={c._id} style={{ borderTop: "1px solid #F0EEE9" }}>
-                  <td style={tdStyle}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={c.image}
-                      alt={c.name}
-                      style={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: 8,
-                        objectFit: "cover",
-                      }}
-                    />
-                  </td>
+                  <td style={tdStyle}></td>
                   <td style={tdStyle}>{c.name}</td>
                   <td style={{ ...tdStyle, textAlign: "right" }}>
                     <button
@@ -267,11 +255,6 @@ export default function CategoriesPage() {
                 placeholder="e.g. Electronics"
               />
             </div>
-            <ImageUploadInput
-              label="Category image"
-              existingImageUrl={editing?.image}
-              onChange={(file) => setForm((f) => ({ ...f, imageFile: file }))}
-            />
             <button
               type="submit"
               disabled={saving}

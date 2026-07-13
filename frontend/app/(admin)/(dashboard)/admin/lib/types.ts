@@ -4,13 +4,16 @@ export interface Category {
   slug: string;
 }
 
-export interface IProduct {
+export interface Product {
   _id: string;
   name: string;
   description: string;
   price: number;
   stock: number;
-  category: string;
+  category: {
+    categoryId: string;
+    name: string;
+  };
   image: string;
   isFeatured: boolean;
   rating: number;
