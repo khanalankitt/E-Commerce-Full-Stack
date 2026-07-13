@@ -58,6 +58,33 @@ class AuthService {
       token,
     };
   }
+
+  async adminLogin(data: LoginInput) {
+    const user = await authRepository.findAdminByEmail(data.email);
+
+    if (!user) {
+      throw new Error("Invalid email or password");
+    }
+
+    const isMatch = await comparePassword(data.password, user.password);
+
+    if (!isMatch) {
+      throw new Error("Invalid email or password");
+    }
+
+    const token = signToken({
+      id: user._id.toString(),
+      role: user.role,
+    });
+
+    const userObject = user.toObject();
+    const { password, ...safeUser } = userObject;
+
+    return {
+      user: safeUser,
+      token,
+    };
+  }
 }
 
 export const authService = new AuthService();

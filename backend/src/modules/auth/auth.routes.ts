@@ -10,4 +10,6 @@ router.post("/logout", authenticate, authController.logout);
 
 router.get("/me", authenticate, authController.me);
 
+router.post("/admin/login", authController.adminLogin);
+
 export default router;

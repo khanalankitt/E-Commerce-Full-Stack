@@ -1,4 +1,4 @@
-import { User } from "../../models/user.model.js";
+import { User, UserRole } from "../../models/user.model.js";
 
 class AuthRepository {
   async findByEmail(email: string) {
@@ -23,6 +23,13 @@ class AuthRepository {
 
   async delete(id: string) {
     return User.findByIdAndDelete(id);
+  }
+
+  async findAdminByEmail(email: string) {
+    return User.findOne({
+      email,
+      role: UserRole.ADMIN,
+    }).select("+password");
   }
 }
 
