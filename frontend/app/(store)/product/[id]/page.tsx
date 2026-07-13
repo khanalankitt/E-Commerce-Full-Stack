@@ -1,5 +1,5 @@
 export const dynamic = "force-static";
-export const revalidate = 3600;
+export const revalidate = 21600;
 
 import Image from "next/image";
 import ProductPageAddToCartButton from "@/components/cart/productPageAddToCardButton";
@@ -8,12 +8,26 @@ type Props = {
   params: Promise<{ id: string }>;
 };
 
+export async function generateStaticParams() {
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/products", {
+    next: {
+      revalidate: 3600,
+    },
+  });
+
+  const json = await res.json();
+
+  return json.data.map((product: { _id: string }) => ({
+    id: product._id,
+  }));
+}
+
 async function getProductDetails(id: string) {
   const res = await fetch(
     process.env.NEXT_PUBLIC_BACKEND_URL + `/products/${id}`,
     {
       next: {
-        revalidate: 3600,
+        revalidate: 21600,
         tags: [`product-${id}`],
       },
     },

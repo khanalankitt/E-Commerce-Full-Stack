@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 export default function LoginFormComponent() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [hidden, setHidden] = useState(false);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -16,17 +17,15 @@ export default function LoginFormComponent() {
   const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch(
-        "/api/auth/login",
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          method: "POST",
-          body: JSON.stringify(form),
-          credentials: "include",
+      setLoading(true);
+      const res = await fetch("/api/auth/login", {
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        method: "POST",
+        body: JSON.stringify(form),
+        credentials: "include",
+      });
 
       if (!res.ok) {
         Swal.fire({
@@ -63,6 +62,8 @@ export default function LoginFormComponent() {
       }
     } catch (error) {
       console.log("Error:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -111,7 +112,7 @@ export default function LoginFormComponent() {
           type="submit"
           className="w-full bg-green-700 text-white font-semibold py-2 cursor-pointer rounded hover:bg-green-800 transition-all"
         >
-          Log in
+          {loading ? "Please wait..." : "Log in"}
         </button>
       </div>
     </form>

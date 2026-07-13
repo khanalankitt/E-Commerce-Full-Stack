@@ -165,7 +165,9 @@ export default function NavBar() {
       <div className="flex gap-5 items-center justify-center h-full w-auto px-5">
         {/* User card */}
         {authLoading ? (
-          <div className="h-4/5 w-28 rounded-full bg-gray-100 animate-pulse" />
+          <div className="h-4/5 flex items-center justify-center w-26 rounded-full bg-gray-100 border border-gray-200">
+            Loading...
+          </div>
         ) : user ? (
           <div className="relative" ref={dropdownRef}>
             <div

@@ -11,6 +11,8 @@ export default function RegisterFormComponent() {
     email: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false);
+
   const [hidden, setHidden] = useState(false);
 
   const router = useRouter();
@@ -22,17 +24,15 @@ export default function RegisterFormComponent() {
   const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch(
-        "/api/auth/register",
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          method: "POST",
-          body: JSON.stringify(form),
-          credentials: "include",
+      setLoading(true);
+      const res = await fetch("/api/auth/register", {
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        method: "POST",
+        body: JSON.stringify(form),
+        credentials: "include",
+      });
 
       if (!res.ok) {
         Swal.fire({
@@ -70,6 +70,8 @@ export default function RegisterFormComponent() {
       }
     } catch (error) {
       console.log("Error:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -128,7 +130,7 @@ export default function RegisterFormComponent() {
           type="submit"
           className="w-full bg-green-700 text-white font-semibold py-2 cursor-pointer rounded hover:bg-green-800 transition-all"
         >
-          Register
+          {loading ? "Please wait..." : "Register"}
         </button>
       </div>
     </form>
