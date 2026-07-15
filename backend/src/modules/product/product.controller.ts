@@ -1,3 +1,4 @@
+import { uploadBufferToCloudinary } from "../../lib/uploadCloudinary.js";
 import type { Request, Response, NextFunction } from "express";
 import { Types } from "mongoose";
 import { Product } from "../../models/product.model.js";
@@ -5,40 +6,32 @@ import { Product } from "../../models/product.model.js";
 class ProductController {
   create = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const {
-        name,
-        description,
-        price,
-        stock,
-        category,
-        image,
-        isFeatured,
-        rating,
-      } = req.body;
+      const { name, description, price, stock, category } = req.body;
 
-      if (!name || !description || price === undefined || !category || !image) {
-        const error: any = new Error(
-          "name, description, price, category, and image are required",
-        );
+      if (!req.file) {
+        const error: any = new Error("Product image is required");
         error.statusCode = 400;
         throw error;
       }
 
-      if (typeof category !== "string" || !Types.ObjectId.isValid(category)) {
+      if (!Types.ObjectId.isValid(category)) {
         const error: any = new Error("Invalid category id");
         error.statusCode = 400;
         throw error;
       }
 
+      const result = await uploadBufferToCloudinary(
+        req.file.buffer,
+        "products",
+      );
+
       const product = await Product.create({
         name,
         description,
-        price,
-        stock,
+        price: Number(price),
+        stock: Number(stock),
         category,
-        image,
-        isFeatured,
-        rating,
+        image: result.secure_url,
       });
 
       return res.status(201).json({ success: true, data: product });
@@ -46,7 +39,6 @@ class ProductController {
       next(error);
     }
   };
-
   getAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const {
@@ -152,6 +144,7 @@ class ProductController {
   update = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
+      const { name, description, price, stock, category } = req.body;
 
       if (typeof id !== "string" || !Types.ObjectId.isValid(id)) {
         const error: any = new Error("Invalid product id");
@@ -160,29 +153,27 @@ class ProductController {
       }
 
       if (
-        req.body.category &&
-        (typeof req.body.category !== "string" ||
-          !Types.ObjectId.isValid(req.body.category))
+        category &&
+        (typeof category !== "string" || !Types.ObjectId.isValid(category))
       ) {
         const error: any = new Error("Invalid category id");
         error.statusCode = 400;
         throw error;
       }
 
-      const allowedFields = [
-        "name",
-        "description",
-        "price",
-        "stock",
-        "category",
-        "image",
-        "isFeatured",
-        "rating",
-      ];
-
       const updates: Record<string, any> = {};
-      for (const field of allowedFields) {
-        if (req.body[field] !== undefined) updates[field] = req.body[field];
+      if (name !== undefined) updates.name = name;
+      if (description !== undefined) updates.description = description;
+      if (price !== undefined) updates.price = Number(price);
+      if (stock !== undefined) updates.stock = Number(stock);
+      if (category !== undefined) updates.category = category;
+
+      if (req.file) {
+        const result = await uploadBufferToCloudinary(
+          req.file.buffer,
+          "products",
+        );
+        updates.image = result.secure_url;
       }
 
       const product = await Product.findByIdAndUpdate(id, updates, {

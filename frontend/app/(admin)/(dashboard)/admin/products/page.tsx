@@ -5,7 +5,7 @@ import { Plus, Pencil, Trash2 } from "lucide-react";
 import Swal from "sweetalert2";
 import Modal from "@/components/admin/modal";
 import ImageUploadInput from "@/components/admin/imageUpload";
-import type { Category, Product } from "../lib/types";
+import type { Product, Category } from "../lib/types";
 import {
   createProduct,
   deleteProduct,
@@ -19,7 +19,7 @@ interface ProductFormState {
   description: string;
   price: string; // kept as string while typing, parsed to number on submit
   stock: string;
-  categoryId: string;
+  _id: string;
   imageFile: File | null;
 }
 
@@ -28,7 +28,7 @@ const emptyForm: ProductFormState = {
   description: "",
   price: "",
   stock: "",
-  categoryId: "",
+  _id: "",
   imageFile: null,
 };
 
@@ -75,21 +75,25 @@ export default function ProductsPage() {
 
   const openEditModal = (product: Product): void => {
     setEditing(product);
+
+    const id = product.category?._id ?? "";
+
     setForm({
       name: product.name,
       description: product.description,
       price: String(product.price),
       stock: String(product.stock),
-      categoryId: product.category.categoryId,
+      _id: id,
       imageFile: null,
     });
+
     setModalOpen(true);
   };
 
-  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
+  const handleSubmit = async (e: React.SubmitEvent): Promise<void> => {
     e.preventDefault();
 
-    if (!form.name.trim() || !form.categoryId || !form.price || !form.stock) {
+    if (!form.name.trim() || !form._id || !form.price || !form.stock) {
       Swal.fire({
         icon: "warning",
         title: "Please fill in all required fields",
@@ -106,7 +110,7 @@ export default function ProductsPage() {
     fd.append("description", form.description.trim());
     fd.append("price", form.price);
     fd.append("stock", form.stock);
-    fd.append("categoryId", form.categoryId);
+    fd.append("category", form._id);
     if (form.imageFile) fd.append("image", form.imageFile);
 
     setSaving(true);
@@ -291,7 +295,9 @@ export default function ProductsPage() {
                   <td style={{ ...tdStyle, textAlign: "right" }}>
                     <button
                       type="button"
-                      onClick={() => openEditModal(p)}
+                      onClick={() => {
+                        openEditModal(p);
+                      }}
                       style={iconButtonStyle}
                     >
                       <Pencil size={14} />
@@ -333,14 +339,14 @@ export default function ProductsPage() {
             <div style={{ marginBottom: 14 }}>
               <label style={labelStyle}>Category</label>
               <select
-                value={form.categoryId}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, categoryId: e.target.value }))
-                }
+                value={form._id}
+                onChange={(e) => {
+                  setForm((f) => ({ ...f, _id: e.target.value }));
+                }}
                 style={inputStyle}
               >
                 <option value="">Select a category</option>
-                {categories.map((c) => (
+                {categories?.map((c) => (
                   <option key={c._id} value={c._id}>
                     {c.name}
                   </option>

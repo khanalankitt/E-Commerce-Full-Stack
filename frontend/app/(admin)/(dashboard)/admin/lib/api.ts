@@ -1,7 +1,7 @@
 import type { AdminAccount, Category, DashboardStats, Product } from "./types";
 
 // const BASE = "/api/admin";
-const BASE = process.env.NEXT_PUBLIC_BACKEND_URL ;
+const BASE = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE}${path}`, {
@@ -35,8 +35,13 @@ export const createProduct = (formData: FormData): Promise<Product> =>
 export const updateProduct = (
   id: string,
   formData: FormData,
-): Promise<Product> =>
-  request<Product>(`/products/${id}`, { method: "PATCH", body: formData });
+): Promise<Product> => {
+
+  return request<Product>(`/products/${id}`, {
+    method: "PATCH",
+    body: formData,
+  });
+};
 
 export const deleteProduct = (id: string): Promise<void> =>
   request<void>(`/products/${id}`, { method: "DELETE" });

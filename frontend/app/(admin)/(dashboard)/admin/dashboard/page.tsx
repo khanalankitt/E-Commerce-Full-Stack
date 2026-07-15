@@ -53,7 +53,7 @@ export default function DashboardPage() {
   }, []);
 
   return (
-    <div>
+    <div className="mt-5">
       <h1 style={{ fontSize: 20, fontWeight: 700, margin: "0 0 4px" }}>
         Dashboard
       </h1>

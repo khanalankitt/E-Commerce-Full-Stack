@@ -2,6 +2,8 @@ import { Router } from "express";
 import productController from "./product.controller.js";
 import { authenticate, authorize } from "../../middlewares/auth.middleware.js";
 import { UserRole } from "../../models/user.model.js";
+import multer from "multer";
+const upload = multer({ storage: multer.memoryStorage() });
 
 const router = Router();
 
@@ -20,6 +22,7 @@ router.patch(
   "/:id",
   authenticate,
   authorize(UserRole.ADMIN),
+  upload.single("image"),
   productController.update,
 );
 router.delete(
