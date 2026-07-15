@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import Swal from "sweetalert2";
 import Modal from "@/components/admin/modal";
-import ImageUploadInput from "@/components/admin/imageUpload";
 import {
   createCategory,
   deleteCategory,
@@ -15,10 +14,10 @@ import type { Category } from "../lib/types";
 
 interface CategoryFormState {
   name: string;
-  imageFile: File | null;
+  slug: string;
 }
 
-const emptyForm: CategoryFormState = { name: "", imageFile: null };
+const emptyForm: CategoryFormState = { name: "", slug: "" };
 
 export default function CategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -31,7 +30,10 @@ export default function CategoriesPage() {
   const loadCategories = (): void => {
     setLoading(true);
     getCategories()
-      .then(setCategories)
+      .then((c) => {
+        //@ts-ignore
+        setCategories(c.data);
+      })
       .catch((err: Error) =>
         Swal.fire({
           icon: "error",
@@ -43,7 +45,6 @@ export default function CategoriesPage() {
   };
 
   useEffect(loadCategories, []);
-
   const openAddModal = (): void => {
     setEditing(null);
     setForm(emptyForm);
@@ -52,30 +53,26 @@ export default function CategoriesPage() {
 
   const openEditModal = (category: Category): void => {
     setEditing(category);
-    setForm({ name: category.name, imageFile: null });
+    setForm({ name: category.name, slug: category.slug });
     setModalOpen(true);
   };
 
-  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
+  const handleSubmit = async (e: React.SubmitEvent): Promise<void> => {
     e.preventDefault();
 
     if (!form.name.trim()) {
       Swal.fire({ icon: "warning", title: "Category name is required" });
       return;
     }
-    if (!editing && !form.imageFile) {
+    if (!editing && !form.slug) {
       Swal.fire({ icon: "warning", title: "Please choose an image" });
       return;
     }
 
-    const fd = new FormData();
-    fd.append("name", form.name.trim());
-    if (form.imageFile) fd.append("image", form.imageFile);
-
     setSaving(true);
     try {
       if (editing) {
-        await updateCategory(editing._id, fd);
+        await updateCategory(editing._id, form.name, form.slug);
         Swal.fire({
           icon: "success",
           title: "Category updated",
@@ -83,7 +80,7 @@ export default function CategoriesPage() {
           showConfirmButton: false,
         });
       } else {
-        await createCategory(fd);
+        await createCategory(form.name, form.slug);
         Swal.fire({
           icon: "success",
           title: "Category added",
@@ -144,11 +141,11 @@ export default function CategoriesPage() {
         }}
       >
         <div>
-          <h1 style={{ fontSize: 20, fontWeight: 700, margin: "0 0 4px" }}>
+          <h1 style={{ fontSize: 20, fontWeight: 700, margin: "20px 0 4px" }}>
             Categories
           </h1>
           <p style={{ fontSize: 13, color: "#6B6B76", margin: 0 }}>
-            {categories.length} categories
+            {categories?.length} categories
           </p>
         </div>
         <button type="button" onClick={openAddModal} style={primaryButtonStyle}>
@@ -175,7 +172,7 @@ export default function CategoriesPage() {
           >
             Loading…
           </div>
-        ) : categories.length === 0 ? (
+        ) : categories?.length === 0 ? (
           <div
             style={{
               padding: 24,
@@ -204,16 +201,16 @@ export default function CategoriesPage() {
                   textTransform: "uppercase",
                 }}
               >
-                <th style={thStyle}>Image</th>
                 <th style={thStyle}>Name</th>
+                <th style={thStyle}>Slug</th>
                 <th style={{ ...thStyle, textAlign: "right" }}>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {categories.map((c) => (
+              {categories?.map((c) => (
                 <tr key={c._id} style={{ borderTop: "1px solid #F0EEE9" }}>
-                  <td style={tdStyle}></td>
                   <td style={tdStyle}>{c.name}</td>
+                  <td style={tdStyle}>{c.slug}</td>
                   <td style={{ ...tdStyle, textAlign: "right" }}>
                     <button
                       type="button"
@@ -253,6 +250,17 @@ export default function CategoriesPage() {
                 }
                 style={inputStyle}
                 placeholder="e.g. Electronics"
+              />
+              <label style={labelStyle} className="mt-3">
+                Slug
+              </label>
+              <input
+                type="text"
+                value={form.slug}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, slug: e.target.value }))
+                }
+                style={inputStyle}
               />
             </div>
             <button

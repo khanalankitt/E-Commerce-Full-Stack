@@ -36,7 +36,6 @@ export const updateProduct = (
   id: string,
   formData: FormData,
 ): Promise<Product> => {
-
   return request<Product>(`/products/${id}`, {
     method: "PATCH",
     body: formData,
@@ -51,14 +50,24 @@ export const deleteProduct = (id: string): Promise<void> =>
 export const getCategories = (): Promise<Category[]> =>
   request<Category[]>("/categories");
 
-export const createCategory = (formData: FormData): Promise<Category> =>
-  request<Category>("/categories", { method: "POST", body: formData });
+export const createCategory = (name: string, slug: string): Promise<Category> =>
+  request<Category>("/categories", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, slug }),
+  });
 
 export const updateCategory = (
   id: string,
-  formData: FormData,
-): Promise<Category> =>
-  request<Category>(`/categories/${id}`, { method: "PUT", body: formData });
+  name: string,
+  slug: string,
+): Promise<Category> => {
+  return request<Category>(`/categories/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id, name, slug }),
+  });
+};
 
 export const deleteCategory = (id: string): Promise<void> =>
   request<void>(`/categories/${id}`, { method: "DELETE" });

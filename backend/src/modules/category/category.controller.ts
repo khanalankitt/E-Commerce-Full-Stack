@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import categoryService from "./category.service.js";
+import { Types } from "mongoose";
 
 class CategoryController {
   create = async (req: Request, res: Response, next: NextFunction) => {
@@ -31,10 +32,16 @@ class CategoryController {
 
   update = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const category = await categoryService.update(
-        String(req.params.id),
-        req.body,
-      );
+      const { id } = req.params;
+      const { name, slug } = req.body;
+
+      if (typeof id !== "string" || !Types.ObjectId.isValid(id)) {
+        const error: any = new Error("Invalid product id");
+        error.statusCode = 400;
+        throw error;
+      }
+
+      const category = await categoryService.update(String(id), { name, slug });
       return res.status(200).json({ success: true, data: category });
     } catch (error) {
       next(error);
