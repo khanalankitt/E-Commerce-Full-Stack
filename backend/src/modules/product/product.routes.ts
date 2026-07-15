@@ -16,6 +16,7 @@ router.post(
   "/",
   authenticate,
   authorize(UserRole.ADMIN),
+  upload.single("image"),
   productController.create,
 );
 router.patch(
