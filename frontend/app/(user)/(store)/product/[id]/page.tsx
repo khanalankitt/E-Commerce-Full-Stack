@@ -1,8 +1,9 @@
-export const dynamic = "force-static";
 export const revalidate = 21600;
+export const dynamic = "force-static";
 
 import Image from "next/image";
 import ProductPageAddToCartButton from "@/components/cart/productPageAddToCardButton";
+import { notFound } from "next/navigation";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -17,7 +18,7 @@ export async function generateStaticParams() {
 
   const json = await res.json();
 
-  return json.data.map((product: { _id: string }) => ({
+  return json.data?.map((product: { _id: string }) => ({
     id: product._id,
   }));
 }
@@ -27,15 +28,13 @@ async function getProductDetails(id: string) {
     process.env.NEXT_PUBLIC_BACKEND_URL + `/products/${id}`,
     {
       next: {
-        revalidate: 21600,
         tags: [`product-${id}`],
       },
     },
   );
 
   if (!res.ok) {
-    console.error("Failed to fetch featured products");
-    return [];
+    notFound();
   }
 
   const json = await res.json();
@@ -55,8 +54,8 @@ export default async function Page({ params }: Props) {
         <div className="flex-1 rounded-xl bg-white p-6 shadow">
           <div className="relative aspect-square w-full">
             <Image
-              src={data.image}
-              alt={data.name}
+              src={data?.image}
+              alt={data?.name}
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
               priority
@@ -67,29 +66,29 @@ export default async function Page({ params }: Props) {
 
         <div className="flex flex-1 flex-col gap-5">
           <span className="w-fit rounded-full bg-yellow-100 px-3 py-1 text-sm font-medium text-yellow-700">
-            {data.category.name}
+            {data?.category?.name}
           </span>
 
-          <h1 className="text-4xl font-bold text-gray-900">{data.name}</h1>
+          <h1 className="text-4xl font-bold text-gray-900">{data?.name}</h1>
 
           <p className="text-3xl font-bold text-green-700 flex items-center justify-start gap-3">
-            Rs. {data.price}{" "}
+            Rs. {data?.price}{" "}
             <span className="text-base text-gray-500 font-normal">
-              ⭐ {data.rating} ({reviews}){" "}
+              ⭐ {data?.rating} ({reviews}){" "}
               <span className="text-gray-300">|</span> {sold} sold
             </span>
           </p>
 
-          <p className="leading-7 text-gray-600">{data.description}</p>
+          <p className="leading-7 text-gray-600">{data?.description}</p>
 
           <p className="text-sm">
             Availability:{" "}
             <span className="font-semibold text-green-700">
-              {data.stock} in stock
+              {data?.stock} in stock
             </span>
           </p>
 
-          <ProductPageAddToCartButton productId={data._id} />
+          <ProductPageAddToCartButton productId={data?._id} />
         </div>
       </div>
     </main>

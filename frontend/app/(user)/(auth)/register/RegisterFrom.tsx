@@ -25,14 +25,17 @@ export default function RegisterFormComponent() {
     e.preventDefault();
     try {
       setLoading(true);
-      const res = await fetch("/api/auth/register", {
-        headers: {
-          "Content-Type": "application/json",
+      const res = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_URL + "/auth/register",
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          method: "POST",
+          body: JSON.stringify(form),
+          credentials: "include",
         },
-        method: "POST",
-        body: JSON.stringify(form),
-        credentials: "include",
-      });
+      );
 
       if (!res.ok) {
         Swal.fire({

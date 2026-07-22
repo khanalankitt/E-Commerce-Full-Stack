@@ -8,7 +8,7 @@ export const addToCart = async (
   quantity: number,
 ) => {
   e.preventDefault();
-  const res = await fetch("/api/cart/add", {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/cart/add`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

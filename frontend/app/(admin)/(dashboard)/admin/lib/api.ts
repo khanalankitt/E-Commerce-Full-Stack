@@ -1,6 +1,5 @@
 import type { AdminAccount, Category, DashboardStats, Product } from "./types";
 
-// const BASE = "/api/admin";
 const BASE = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {

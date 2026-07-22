@@ -18,14 +18,17 @@ export default function LoginFormComponent() {
     e.preventDefault();
     try {
       setLoading(true);
-      const res = await fetch("/api/auth/login", {
-        headers: {
-          "Content-Type": "application/json",
+      const res = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_URL + "/auth/login",
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          method: "POST",
+          body: JSON.stringify(form),
+          credentials: "include",
         },
-        method: "POST",
-        body: JSON.stringify(form),
-        credentials: "include",
-      });
+      );
 
       if (!res.ok) {
         Swal.fire({

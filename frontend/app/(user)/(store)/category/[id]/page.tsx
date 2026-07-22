@@ -1,4 +1,5 @@
 import CategoryClient from "@/components/category/categoryClient";
+import { notFound } from "next/navigation";
 
 export const revalidate = 3600;
 export const dynamic = "force-static";
@@ -12,7 +13,6 @@ async function getProducts(slug: string) {
     process.env.NEXT_PUBLIC_BACKEND_URL + `/categories/products/${slug}`,
     {
       next: {
-        revalidate: 3600,
         tags: [`categories-${slug}`],
       },
     },
@@ -20,7 +20,7 @@ async function getProducts(slug: string) {
 
   if (!res.ok) {
     console.error("Failed to fetch categories products");
-    return [];
+    notFound();
   }
 
   const json = await res.json();

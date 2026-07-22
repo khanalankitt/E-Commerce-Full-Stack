@@ -41,7 +41,10 @@ export default function NavBar() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await fetch("/api/auth/me", { credentials: "include" });
+        const res = await fetch(
+          process.env.NEXT_PUBLIC_BACKEND_URL + "/auth/me",
+          { credentials: "include" },
+        );
 
         if (res.ok) {
           const data = await res.json();
@@ -96,7 +99,7 @@ export default function NavBar() {
     }
 
     try {
-      await fetch("/api/auth/logout", {
+      await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/auth/logout", {
         method: "POST",
         credentials: "include",
       });
