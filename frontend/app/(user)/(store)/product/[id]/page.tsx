@@ -16,6 +16,15 @@ export async function generateStaticParams() {
     },
   });
 
+  if (!res.ok) {
+    console.error(
+      "generateStaticParams fetch failed:",
+      res.status,
+      await res.text(),
+    );
+    return [];
+  }
+
   const json = await res.json();
 
   return json.data?.map((product: { _id: string }) => ({
