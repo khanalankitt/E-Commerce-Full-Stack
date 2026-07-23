@@ -37,10 +37,7 @@ export default function ShippingDetails() {
 
   const fetchAddresses = async () => {
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/addresses`,
-        { credentials: "include" },
-      );
+      const res = await fetch(`/api/addresses`, { credentials: "include" });
       if (!res.ok) return;
 
       const json = await res.json();
@@ -128,7 +125,7 @@ export default function ShippingDetails() {
     setDeleting(addressId);
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/addresses/${addressId}`,
+        `/api/addresses/${addressId}`,
         {
           method: "DELETE",
           credentials: "include",
@@ -164,9 +161,7 @@ export default function ShippingDetails() {
     setSaving(true);
     try {
       const isEditing = editingId !== null;
-      const url = isEditing
-        ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/addresses/${editingId}`
-        : `${process.env.NEXT_PUBLIC_BACKEND_URL}/addresses`;
+      const url = isEditing ? `/api/addresses/${editingId}` : `/api/addresses`;
 
       const res = await fetch(url, {
         method: isEditing ? "PATCH" : "POST",

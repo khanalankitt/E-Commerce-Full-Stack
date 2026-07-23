@@ -22,7 +22,7 @@ export default function QuantityUpdateButton({
 
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/cart/${productId}`,
+        `/api/cart/${productId}`,
         {
           method: "PATCH",
           body: JSON.stringify({ quantity: newQuantity }),

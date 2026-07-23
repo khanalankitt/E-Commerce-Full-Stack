@@ -25,13 +25,10 @@ export default function PlaceOrderFinalButton({
 
     setLoading(true);
     try {
-      const res = await fetch(
-        process.env.NEXT_PUBLIC_BACKEND_URL + `/orders/${orderId}/place`,
-        {
-          method: "PATCH",
-          credentials: "include",
-        },
-      );
+      const res = await fetch(`/api/orders/${orderId}/place`, {
+        method: "PATCH",
+        credentials: "include",
+      });
 
       if (!res.ok) {
         const errJson = await res.json().catch(() => null);
