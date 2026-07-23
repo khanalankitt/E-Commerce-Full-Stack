@@ -1,7 +1,6 @@
 import CartRemoveButton from "@/components/cart/cartRemoveButton";
 import ClearCartButton from "@/components/cart/clearCartButton";
 import QuantityUpdateButton from "@/components/cart/quantityUpdateButtons";
-import { cookies } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -20,12 +19,8 @@ interface CartItem {
 }
 
 async function getCartItems(): Promise<CartItem[]> {
-  const cookieStore = await cookies();
-
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/cart`, {
-    headers: {
-      Cookie: cookieStore.toString(),
-    },
+    credentials: "include",
     cache: "no-store",
   });
 

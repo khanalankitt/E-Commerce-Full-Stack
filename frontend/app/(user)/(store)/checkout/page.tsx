@@ -1,4 +1,3 @@
-import { cookies } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 import ShippingDetails from "@/components/shippingDetails";
@@ -18,12 +17,8 @@ interface CartItem {
 }
 
 async function getCartItems(): Promise<CartItem[]> {
-  const cookieStore = await cookies();
-
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/cart`, {
-    headers: {
-      Cookie: cookieStore.toString(),
-    },
+    credentials: "include",
     cache: "no-store",
   });
 
