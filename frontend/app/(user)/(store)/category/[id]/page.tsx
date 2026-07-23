@@ -10,11 +10,6 @@ type Props = {
 async function getProducts(slug: string) {
   const res = await fetch(
     process.env.NEXT_PUBLIC_BACKEND_URL + `/categories/products/${slug}`,
-    {
-      next: {
-        tags: [`categories-${slug}`],
-      },
-    },
   );
 
   if (!res.ok) {

@@ -8,37 +8,9 @@ type Props = {
   params: Promise<{ id: string }>;
 };
 
-export async function generateStaticParams() {
-  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/products", {
-    next: {
-      revalidate: 3600,
-    },
-  });
-
-  if (!res.ok) {
-    console.error(
-      "generateStaticParams fetch failed:",
-      res.status,
-      await res.text(),
-    );
-    return [];
-  }
-
-  const json = await res.json();
-
-  return json.data?.map((product: { _id: string }) => ({
-    id: product._id,
-  }));
-}
-
 async function getProductDetails(id: string) {
   const res = await fetch(
     process.env.NEXT_PUBLIC_BACKEND_URL + `/products/${id}`,
-    {
-      next: {
-        tags: [`product-${id}`],
-      },
-    },
   );
 
   if (!res.ok) {
