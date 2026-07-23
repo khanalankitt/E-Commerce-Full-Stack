@@ -2,7 +2,6 @@ import { IProduct } from "@/app/types/product";
 import Image from "next/image";
 import Link from "next/link";
 import AddToCartButton from "./cart/featuredAddToCartButton";
-import { notFound } from "next/navigation";
 
 async function getFeaturedProducts() {
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/products", {
@@ -14,7 +13,7 @@ async function getFeaturedProducts() {
 
   if (!res.ok) {
     console.error("Failed to fetch featured products");
-    notFound();
+    return [];
   }
 
   const json = await res.json();

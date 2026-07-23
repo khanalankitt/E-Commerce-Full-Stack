@@ -3,7 +3,6 @@ export const dynamic = "force-static";
 
 import Image from "next/image";
 import ProductPageAddToCartButton from "@/components/cart/productPageAddToCardButton";
-import { notFound } from "next/navigation";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -43,7 +42,7 @@ async function getProductDetails(id: string) {
   );
 
   if (!res.ok) {
-    notFound();
+    return [];
   }
 
   const json = await res.json();

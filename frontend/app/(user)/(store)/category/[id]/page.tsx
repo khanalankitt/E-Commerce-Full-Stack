@@ -1,5 +1,4 @@
 import CategoryClient from "@/components/category/categoryClient";
-import { notFound } from "next/navigation";
 
 export const revalidate = 3600;
 export const dynamic = "force-static";
@@ -20,7 +19,7 @@ async function getProducts(slug: string) {
 
   if (!res.ok) {
     console.error("Failed to fetch categories products");
-    notFound();
+    return [];
   }
 
   const json = await res.json();
