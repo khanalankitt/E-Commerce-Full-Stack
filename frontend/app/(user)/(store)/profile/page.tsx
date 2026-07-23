@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 
 interface User {
   _id: string;
@@ -9,8 +10,12 @@ interface User {
 }
 
 async function getUser(): Promise<User | null> {
+  const cookieStore = await cookies();
+
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/auth/me", {
-    credentials: "include",
+    headers: {
+      Cookie: cookieStore.toString(),
+    },
     cache: "no-store",
   });
 

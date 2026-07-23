@@ -54,8 +54,6 @@ export default function CategoryClient({ products }: { products: IProduct[] }) {
   const hasActiveFilters =
     search !== "" || maxPrice !== 50000 || minRating !== null;
 
-  console.log(filtered);
-
   return (
     <div className="max-w-7xl w-full mx-auto px-5 py-10">
       <div className="flex flex-col lg:flex-row gap-8">

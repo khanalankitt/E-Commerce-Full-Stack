@@ -7,15 +7,14 @@ async function startServer() {
   try {
     await connectDB();
     console.log("✅ Database connected");
-
-    if (process.env.NODE_ENV !== "production") {
-      app.listen(env.PORT, () => {
-        console.log(`🚀 Server running on port ${env.PORT}`);
-      });
-    }
   } catch (err) {
-    console.error("❌ Failed to start server", err);
-    process.exit(1);
+    console.error("❌ Failed to connect to database", err);
+  }
+
+  if (process.env.NODE_ENV !== "production") {
+    app.listen(env.PORT, () => {
+      console.log(`🚀 Server running on port ${env.PORT}`);
+    });
   }
 }
 

@@ -3,6 +3,7 @@ import Link from "next/link";
 import ShippingDetails from "@/components/shippingDetails";
 import { ShippingProvider } from "@/app/contexts/shippingContext";
 import ConfirmOrderButton from "@/components/confirmOrderButton";
+import { cookies } from "next/headers";
 
 export const dynamic = "force-dynamic";
 
@@ -17,8 +18,12 @@ interface CartItem {
 }
 
 async function getCartItems(): Promise<CartItem[]> {
+  const cookieStore = await cookies();
+
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/cart`, {
-    credentials: "include",
+    headers: {
+      Cookie: cookieStore.toString(),
+    },
     cache: "no-store",
   });
 

@@ -4,12 +4,7 @@ import Link from "next/link";
 import AddToCartButton from "./cart/featuredAddToCartButton";
 
 async function getFeaturedProducts() {
-  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/products", {
-    next: {
-      revalidate: 3600,
-      tags: ["products"],
-    },
-  });
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/products");
 
   if (!res.ok) {
     console.error("Failed to fetch featured products");

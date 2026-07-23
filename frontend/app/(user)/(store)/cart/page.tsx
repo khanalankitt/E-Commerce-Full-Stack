@@ -3,6 +3,7 @@ import ClearCartButton from "@/components/cart/clearCartButton";
 import QuantityUpdateButton from "@/components/cart/quantityUpdateButtons";
 import Image from "next/image";
 import Link from "next/link";
+import { cookies } from "next/headers";
 
 export const dynamic = "force-dynamic";
 
@@ -19,8 +20,12 @@ interface CartItem {
 }
 
 async function getCartItems(): Promise<CartItem[]> {
+  const cookieStore = await cookies();
+
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/cart`, {
-    credentials: "include",
+    headers: {
+      Cookie: cookieStore.toString(),
+    },
     cache: "no-store",
   });
 
