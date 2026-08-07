@@ -73,18 +73,22 @@ export const deleteCategory = (id: string): Promise<void> =>
 
 // ---------- Account ----------
 
-export const getAccount = (): Promise<AdminAccount> =>
-  request<AdminAccount>("/account");
+export const getAccount = async (): Promise<AdminAccount> => {
+  const res = await request<{ data: AdminAccount }>("/account");
+  return res.data;
+};
 
-export const updateAccount = (data: {
+export const updateAccount = async (data: {
   name: string;
   email: string;
-}): Promise<AdminAccount> =>
-  request<AdminAccount>("/account", {
+}): Promise<AdminAccount> => {
+  const res = await request<{ data: AdminAccount }>("/account", {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
+  return res.data;
+};
 
 export const changePassword = (data: {
   currentPassword: string;
