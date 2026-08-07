@@ -30,6 +30,9 @@ export interface AdminAccount {
   _id: string;
   name: string;
   email: string;
+  role?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface ApiError {

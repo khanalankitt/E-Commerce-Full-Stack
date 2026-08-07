@@ -98,9 +98,6 @@ export default function Sidebar() {
             );
           })}
         </nav>
-        <button className="mt-auto bg-red-500 text-white cursor-pointer rounded-md w-full p-1">
-          Logout
-        </button>
       </aside>
     </div>
   );
