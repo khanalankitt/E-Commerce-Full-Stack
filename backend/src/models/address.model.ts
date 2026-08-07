@@ -59,7 +59,7 @@ const addressSchema = new Schema<IAddress>(
   },
 );
 
-// Speeds up "get all addresses for user" and "find user's default address" queries
-addressSchema.index({ user: 1 });
+addressSchema.index({ user: 1, createdAt: -1 });
+addressSchema.index({ user: 1, isDefaultShippingAddress: 1 });
 
 export const Address = model<IAddress>("Address", addressSchema);

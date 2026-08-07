@@ -60,4 +60,12 @@ const productSchema = new Schema<IProduct>(
   },
 );
 
+productSchema.index({ category: 1, createdAt: -1 });
+productSchema.index({ category: 1, price: 1 });
+productSchema.index({ category: 1, rating: -1 });
+productSchema.index({ isFeatured: 1, createdAt: -1 });
+productSchema.index({ price: 1 });
+productSchema.index({ rating: -1 });
+productSchema.index({ createdAt: -1 });
+
 export const Product = model<IProduct>("Product", productSchema);
