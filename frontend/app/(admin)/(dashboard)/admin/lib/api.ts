@@ -1,6 +1,6 @@
 import type { AdminAccount, Category, DashboardStats, Product } from "./types";
 
-const BASE = process.env.NEXT_PUBLIC_BACKEND_URL;
+const BASE = "/api";
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE}${path}`, {
