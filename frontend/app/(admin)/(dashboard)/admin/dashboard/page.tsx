@@ -848,7 +848,7 @@ const cardStyle: React.CSSProperties = {
 };
 const pageStyle: React.CSSProperties = {
   fontFamily: "'Inter', sans-serif",
-  maxWidth: 1100,
+  maxWidth: 1700,
 };
 const thStyle: React.CSSProperties = {
   textAlign: "left",
