@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Pencil, Plus, Trash2 } from "lucide-react";
 import Swal from "sweetalert2";
 import Modal from "@/components/admin/modal";
 import {
@@ -19,6 +19,14 @@ interface CategoryFormState {
 
 const emptyForm: CategoryFormState = { name: "", slug: "" };
 
+const palette = ["#FF5A1F", "#3B82F6", "#16A34A", "#8B5CF6", "#E8590C", "#0CA5E9"];
+
+const colorFor = (name: string): string => {
+  let h = 0;
+  for (const ch of name) h = (h * 31 + ch.charCodeAt(0)) % 997;
+  return palette[h % palette.length];
+};
+
 export default function CategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -30,10 +38,7 @@ export default function CategoriesPage() {
   const loadCategories = (): void => {
     setLoading(true);
     getCategories()
-      .then((c) => {
-        //@ts-ignore
-        setCategories(c.data);
-      })
+      .then((c) => setCategories(c))
       .catch((err: Error) =>
         Swal.fire({
           icon: "error",
@@ -44,7 +49,30 @@ export default function CategoriesPage() {
       .finally(() => setLoading(false));
   };
 
-  useEffect(loadCategories, []);
+  useEffect(() => {
+    let cancelled = false;
+    getCategories()
+      .then((c) => {
+        if (cancelled) return;
+        setCategories(c);
+      })
+      .catch((err: Error) => {
+        if (!cancelled) {
+          Swal.fire({
+            icon: "error",
+            title: "Couldn't load categories",
+            text: err.message,
+          });
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const openAddModal = (): void => {
     setEditing(null);
     setForm(emptyForm);
@@ -57,31 +85,31 @@ export default function CategoriesPage() {
     setModalOpen(true);
   };
 
-  const handleSubmit = async (e: React.SubmitEvent): Promise<void> => {
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
 
     if (!form.name.trim()) {
       Swal.fire({ icon: "warning", title: "Category name is required" });
       return;
     }
-    if (!editing && !form.slug) {
-      Swal.fire({ icon: "warning", title: "Please choose an image" });
+    if (!form.slug.trim()) {
+      Swal.fire({ icon: "warning", title: "Slug is required" });
       return;
     }
 
     setSaving(true);
     try {
       if (editing) {
-        await updateCategory(editing._id, form.name, form.slug);
-        Swal.fire({
+        await updateCategory(editing._id, form.name.trim(), form.slug.trim());
+        await Swal.fire({
           icon: "success",
           title: "Category updated",
           timer: 1400,
           showConfirmButton: false,
         });
       } else {
-        await createCategory(form.name, form.slug);
-        Swal.fire({
+        await createCategory(form.name.trim(), form.slug.trim());
+        await Swal.fire({
           icon: "success",
           title: "Category added",
           timer: 1400,
@@ -114,7 +142,7 @@ export default function CategoriesPage() {
 
     try {
       await deleteCategory(category._id);
-      Swal.fire({
+      await Swal.fire({
         icon: "success",
         title: "Deleted",
         timer: 1200,
@@ -131,21 +159,22 @@ export default function CategoriesPage() {
   };
 
   return (
-    <div>
+    <div className="mt-5" style={pageStyle}>
       <div
         style={{
           display: "flex",
-          alignItems: "center",
+          alignItems: "flex-end",
           justifyContent: "space-between",
-          marginBottom: 20,
+          gap: 12,
+          marginBottom: 18,
         }}
       >
         <div>
-          <h1 style={{ fontSize: 20, fontWeight: 700, margin: "20px 0 4px" }}>
+          <h1 style={{ fontSize: 20, fontWeight: 700, margin: "0 0 4px" }}>
             Categories
           </h1>
           <p style={{ fontSize: 13, color: "#6B6B76", margin: 0 }}>
-            {categories?.length} categories
+            {categories.length} categories in your store
           </p>
         </div>
         <button type="button" onClick={openAddModal} style={primaryButtonStyle}>
@@ -162,60 +191,92 @@ export default function CategoriesPage() {
         }}
       >
         {loading ? (
-          <div
-            style={{
-              padding: 24,
-              textAlign: "center",
-              color: "#8A8996",
-              fontSize: 13,
-            }}
-          >
-            Loading…
+          <div style={{ padding: "28px 20px" }}>
+            <div
+              style={{ height: 14, width: 200, borderRadius: 6, background: "#EFEDE8" }}
+            />
+            <div
+              style={{
+                height: 8,
+                width: 140,
+                borderRadius: 6,
+                background: "#EFEDE8",
+                marginTop: 8,
+              }}
+            />
           </div>
-        ) : categories?.length === 0 ? (
-          <div
-            style={{
-              padding: 24,
-              textAlign: "center",
-              color: "#8A8996",
-              fontSize: 13,
-            }}
-          >
-            No categories yet.
-          </div>
+        ) : categories.length === 0 ? (
+          <EmptyState text="No categories yet. Add your first category." />
         ) : (
-          <table
-            style={{
-              width: "100%",
-              borderCollapse: "collapse",
-              fontSize: 13.5,
-            }}
-          >
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
-              <tr
-                style={{
-                  background: "#FAFAF8",
-                  textAlign: "left",
-                  fontSize: 11.5,
-                  color: "#8A8996",
-                  textTransform: "uppercase",
-                }}
-              >
-                <th style={thStyle}>Name</th>
-                <th style={thStyle}>Slug</th>
-                <th style={{ ...thStyle, textAlign: "right" }}>Actions</th>
+              <tr>
+                {["Category", "Slug", ""].map((h, i) => (
+                  <th
+                    key={h}
+                    style={i === 2 ? { ...thStyle, textAlign: "right" } : thStyle}
+                  >
+                    {h === "" ? "Actions" : h}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
-              {categories?.map((c) => (
-                <tr key={c._id} style={{ borderTop: "1px solid #F0EEE9" }}>
-                  <td style={tdStyle}>{c.name}</td>
-                  <td style={tdStyle}>{c.slug}</td>
+              {categories.map((c) => (
+                <tr key={c._id}>
+                  <td style={tdStyle}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      <div
+                        style={{
+                          width: 32,
+                          height: 32,
+                          borderRadius: 9,
+                          background: `${colorFor(c.name)}1F`,
+                          color: colorFor(c.name),
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontWeight: 700,
+                          fontSize: 13,
+                          flexShrink: 0,
+                        }}
+                      >
+                        {c.name.charAt(0).toUpperCase()}
+                      </div>
+                      <span
+                        style={{
+                          fontWeight: 600,
+                          color: "#1C1B29",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {c.name}
+                      </span>
+                    </div>
+                  </td>
+                  <td style={tdStyle}>
+                    <span
+                      style={{
+                        fontFamily: "monospace",
+                        fontSize: 12,
+                        background: "#FAFAF8",
+                        border: "1px solid #F0EEE9",
+                        borderRadius: 6,
+                        padding: "3px 8px",
+                        color: "#6B6B76",
+                      }}
+                    >
+                      /{c.slug}
+                    </span>
+                  </td>
                   <td style={{ ...tdStyle, textAlign: "right" }}>
                     <button
                       type="button"
                       onClick={() => openEditModal(c)}
                       style={iconButtonStyle}
+                      aria-label={`Edit ${c.name}`}
                     >
                       <Pencil size={14} />
                     </button>
@@ -223,6 +284,7 @@ export default function CategoriesPage() {
                       type="button"
                       onClick={() => handleDelete(c)}
                       style={{ ...iconButtonStyle, color: "#C2410C" }}
+                      aria-label={`Delete ${c.name}`}
                     >
                       <Trash2 size={14} />
                     </button>
@@ -245,22 +307,19 @@ export default function CategoriesPage() {
               <input
                 type="text"
                 value={form.name}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, name: e.target.value }))
-                }
+                onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
                 style={inputStyle}
                 placeholder="e.g. Electronics"
               />
-              <label style={labelStyle} className="mt-3">
-                Slug
-              </label>
+            </div>
+            <div style={{ marginBottom: 18 }}>
+              <label style={labelStyle}>Slug</label>
               <input
                 type="text"
                 value={form.slug}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, slug: e.target.value }))
-                }
+                onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
                 style={inputStyle}
+                placeholder="e.g. electronics"
               />
             </div>
             <button
@@ -270,7 +329,6 @@ export default function CategoriesPage() {
                 ...primaryButtonStyle,
                 width: "100%",
                 justifyContent: "center",
-                marginTop: 4,
               }}
             >
               {saving ? "Saving…" : editing ? "Save changes" : "Add category"}
@@ -282,6 +340,25 @@ export default function CategoriesPage() {
   );
 }
 
+function EmptyState({ text }: { text: string }) {
+  return (
+    <div
+      style={{
+        padding: "48px 20px",
+        textAlign: "center",
+        color: "#8A8996",
+        fontSize: 13,
+      }}
+    >
+      {text}
+    </div>
+  );
+}
+
+const pageStyle: React.CSSProperties = {
+  fontFamily: "'Inter', sans-serif",
+  width: "100%",
+};
 const primaryButtonStyle: React.CSSProperties = {
   display: "flex",
   alignItems: "center",
@@ -295,17 +372,36 @@ const primaryButtonStyle: React.CSSProperties = {
   fontWeight: 600,
   cursor: "pointer",
 };
-
 const iconButtonStyle: React.CSSProperties = {
-  border: "none",
-  background: "none",
+  border: "1px solid #F0EEE9",
+  background: "#FAFAF8",
   cursor: "pointer",
-  padding: 6,
+  borderRadius: 8,
+  padding: 7,
   color: "#4B4A55",
+  display: "inline-flex",
+  alignItems: "center",
+  marginLeft: 6,
 };
-
-const thStyle: React.CSSProperties = { padding: "10px 16px", fontWeight: 600 };
-const tdStyle: React.CSSProperties = { padding: "10px 16px" };
+const thStyle: React.CSSProperties = {
+  textAlign: "left",
+  fontSize: 11,
+  fontWeight: 600,
+  textTransform: "uppercase",
+  letterSpacing: 0.4,
+  color: "#8A8996",
+  padding: "10px 20px",
+  background: "#FAFAF8",
+  borderBottom: "1px solid #F0EEE9",
+  whiteSpace: "nowrap",
+};
+const tdStyle: React.CSSProperties = {
+  padding: "11px 20px",
+  fontSize: 13,
+  color: "#4B4A55",
+  borderBottom: "1px solid #F5F3EF",
+  whiteSpace: "nowrap",
+};
 const labelStyle: React.CSSProperties = {
   display: "block",
   fontSize: 12.5,
@@ -321,4 +417,5 @@ const inputStyle: React.CSSProperties = {
   fontSize: 13.5,
   boxSizing: "border-box",
   fontFamily: "inherit",
+  color: "#1C1B29",
 };

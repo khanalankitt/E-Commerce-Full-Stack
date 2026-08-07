@@ -42,20 +42,28 @@ export const getDashboardData = async (): Promise<{
 
 // ---------- Products ----------
 
-export const getProducts = (): Promise<Product[]> =>
-  request<Product[]>("/products");
+export const getProducts = async (): Promise<Product[]> => {
+  const res = await request<{ data: Product[] }>("/products");
+  return res.data;
+};
 
-export const createProduct = (formData: FormData): Promise<Product> =>
-  request<Product>("/products", { method: "POST", body: formData });
+export const createProduct = async (formData: FormData): Promise<Product> => {
+  const res = await request<{ data: Product }>("/products", {
+    method: "POST",
+    body: formData,
+  });
+  return res.data;
+};
 
-export const updateProduct = (
+export const updateProduct = async (
   id: string,
   formData: FormData,
 ): Promise<Product> => {
-  return request<Product>(`/products/${id}`, {
+  const res = await request<{ data: Product }>(`/products/${id}`, {
     method: "PATCH",
     body: formData,
   });
+  return res.data;
 };
 
 export const deleteProduct = (id: string): Promise<void> =>
@@ -63,26 +71,34 @@ export const deleteProduct = (id: string): Promise<void> =>
 
 // ---------- Categories ----------
 
-export const getCategories = (): Promise<Category[]> =>
-  request<Category[]>("/categories");
+export const getCategories = async (): Promise<Category[]> => {
+  const res = await request<{ data: Category[] }>("/categories");
+  return res.data;
+};
 
-export const createCategory = (name: string, slug: string): Promise<Category> =>
-  request<Category>("/categories", {
+export const createCategory = async (
+  name: string,
+  slug: string,
+): Promise<Category> => {
+  const res = await request<{ data: Category }>("/categories", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ name, slug }),
   });
+  return res.data;
+};
 
-export const updateCategory = (
+export const updateCategory = async (
   id: string,
   name: string,
   slug: string,
 ): Promise<Category> => {
-  return request<Category>(`/categories/${id}`, {
+  const res = await request<{ data: Category }>(`/categories/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ id, name, slug }),
   });
+  return res.data;
 };
 
 export const deleteCategory = (id: string): Promise<void> =>
