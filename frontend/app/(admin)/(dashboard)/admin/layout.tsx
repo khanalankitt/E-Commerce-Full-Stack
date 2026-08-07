@@ -1,4 +1,5 @@
 import Sidebar from "@/components/admin/sidebar";
+import AuthGuard from "@/components/admin/AuthGuard";
 
 export default function StoreLayout({
   children,
@@ -6,7 +7,7 @@ export default function StoreLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
+    <AuthGuard>
       <Sidebar />
       <main
         className="pl-60 pr-5"
@@ -14,6 +15,6 @@ export default function StoreLayout({
       >
         {children}
       </main>
-    </>
+    </AuthGuard>
   );
 }

@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { LayoutDashboard, Package, Tag, UserCircle, Zap } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { LogOut, LayoutDashboard, Package, Tag, UserCircle, Zap } from "lucide-react";
+import Swal from "sweetalert2";
 import type { LucideIcon } from "lucide-react";
 
 interface NavItem {
@@ -20,6 +21,30 @@ const navItems: NavItem[] = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = async (): Promise<void> => {
+    const result = await Swal.fire({
+      icon: "warning",
+      title: "Sign out?",
+      text: "You will be returned to the admin login page.",
+      showCancelButton: true,
+      confirmButtonText: "Sign out",
+      confirmButtonColor: "#FF5A1F",
+      cancelButtonText: "Cancel",
+    });
+    if (!result.isConfirmed) return;
+
+    try {
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch (err) {
+      console.error("Logout failed", err);
+    }
+    router.replace("/adminLogin");
+  };
 
   return (
     <div
@@ -98,6 +123,28 @@ export default function Sidebar() {
             );
           })}
         </nav>
+        <button
+          onClick={handleLogout}
+          style={{
+            marginTop: "auto",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 8,
+            width: "100%",
+            background: "rgba(255,90,31,0.12)",
+            color: "#FF8C5A",
+            border: "1px solid rgba(255,90,31,0.3)",
+            borderRadius: 8,
+            padding: "9px 0",
+            fontSize: 13,
+            fontWeight: 600,
+            cursor: "pointer",
+          }}
+        >
+          <LogOut size={15} />
+          Logout
+        </button>
       </aside>
     </div>
   );
