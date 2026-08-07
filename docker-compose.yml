@@ -3,15 +3,15 @@ services:
     image: mongo:7
     restart: unless-stopped
     container_name: e-commerce-mongo
-    ports:
-      - "27017:27017"
+    command: ["mongod", "--quiet", "--bind_ip_all", "--logpath", "/dev/null"]
     volumes:
       - mongo-data:/data/db
     healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
+      test: ["CMD-SHELL", "mongosh --quiet --eval 'db.adminCommand(\"ping\")' > /dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
   backend:
     build: ./backend
