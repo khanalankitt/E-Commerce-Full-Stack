@@ -23,6 +23,23 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 export const getStats = (): Promise<DashboardStats> =>
   request<DashboardStats>("/stats");
 
+export const getDashboardData = async (): Promise<{
+  stats: DashboardStats;
+  products: Product[];
+  categories: Category[];
+}> => {
+  const [stats, products, categories] = await Promise.all([
+    getStats(),
+    request<{ data: Product[] }>("/products?limit=100"),
+    request<{ data: Category[] }>("/categories"),
+  ]);
+  return {
+    stats,
+    products: products.data,
+    categories: categories.data,
+  };
+};
+
 // ---------- Products ----------
 
 export const getProducts = (): Promise<Product[]> =>

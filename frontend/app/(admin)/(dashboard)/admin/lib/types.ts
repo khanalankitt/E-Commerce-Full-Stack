@@ -17,6 +17,8 @@ export interface Product {
   image: string;
   isFeatured: boolean;
   rating: number;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface DashboardStats {
