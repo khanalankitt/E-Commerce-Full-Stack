@@ -16,6 +16,7 @@ class AuthController {
         httpOnly: true,
         secure: true,
         sameSite: "lax",
+        domain: ".khanalankit.com",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
@@ -38,6 +39,7 @@ class AuthController {
         httpOnly: true,
         secure: true,
         sameSite: "lax",
+        domain: ".khanalankit.com",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
@@ -60,6 +62,7 @@ class AuthController {
         httpOnly: true,
         secure: true,
         sameSite: "lax",
+        domain: ".khanalankit.com",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
@@ -78,6 +81,7 @@ class AuthController {
         httpOnly: true,
         secure: true,
         sameSite: "lax",
+        domain: ".khanalankit.com",
       });
 
       res.status(200).json({
