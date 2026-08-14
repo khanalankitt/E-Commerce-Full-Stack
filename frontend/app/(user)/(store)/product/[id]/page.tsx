@@ -39,6 +39,7 @@ export default async function Page({ params }: Props) {
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
               priority
+              unoptimized
               className="object-contain"
             />
           </div>

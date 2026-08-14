@@ -85,6 +85,7 @@ export default async function CartPage() {
                       alt={item.product.name}
                       height={120}
                       width={120}
+                      unoptimized
                       className="object-contain p-2 rounded-xl"
                     />
                   </div>

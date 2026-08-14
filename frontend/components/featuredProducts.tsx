@@ -34,6 +34,7 @@ export default async function FeaturedProducts() {
                 width={300}
                 alt="Product Image"
                 priority={index < 4}
+                unoptimized
                 className="rounded-t-lg object-cover"
               />
               <div className="flex flex-col p-2">

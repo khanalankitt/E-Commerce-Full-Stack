@@ -18,6 +18,7 @@ function ProductCard({ product }: { product: IProduct }) {
           height={100}
           width={100}
           alt={product.name}
+          unoptimized
           className="w-full aspect-square object-contain p-2 rounded-t-2xl"
         />
       </div>

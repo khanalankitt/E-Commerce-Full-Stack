@@ -88,6 +88,7 @@ export default async function CheckoutPage() {
                           alt={item.product.name}
                           height={60}
                           width={60}
+                          unoptimized
                           className="object-contain p-1 rounded-xl"
                         />
                         <span className="absolute top-0 right-0 bg-green-700 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">

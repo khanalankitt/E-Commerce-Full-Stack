@@ -107,6 +107,7 @@ export default async function OrdersPage() {
                             alt={item.product.name}
                             height={50}
                             width={50}
+                            unoptimized
                             className="object-contain p-1 rounded-lg"
                           />
                         </div>
