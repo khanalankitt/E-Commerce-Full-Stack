@@ -23,7 +23,7 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("/api/cart", routes);
+app.use("/cart", routes);
 app.use(errorHandler);
 
 export default app;
