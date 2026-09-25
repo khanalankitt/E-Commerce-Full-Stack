@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import OrderRepository from "./order.repository.js";
-import CartRepository from "../cart/cart.repository.js";
-import AddressRepository from "../address/address.repository.js";
+import CartClient from "../../clients/cart.client.js";
+import IdentityClient from "../../clients/identity.client.js";
 import { OrderStatus } from "../../models/order.model.js";
 
 class OrderService {
@@ -10,12 +10,12 @@ class OrderService {
       throw new Error("Invalid address ID");
     }
 
-    const cart = await CartRepository.getCart(userId);
+    const cart = await CartClient.getCart(userId);
     if (!cart || cart.items.length === 0) {
       throw new Error("Your cart is empty");
     }
 
-    const address = await AddressRepository.findByIdAndUser(addressId, userId);
+    const address = await IdentityClient.getAddress(addressId, userId);
     if (!address) {
       throw new Error("Address not found");
     }
@@ -39,7 +39,7 @@ class OrderService {
       status: OrderStatus.PENDING,
     });
 
-    await CartRepository.deleteAll(userId);
+    await CartClient.clearCart(userId);
 
     return OrderRepository.findByIdAndUser(String(order._id), userId);
   }
