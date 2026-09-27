@@ -10,6 +10,7 @@ router.use(
   createProxyMiddleware({
     target: orderServiceUrl,
     changeOrigin: true,
+    pathRewrite: (path, req: any) => req.originalUrl.replace(/^\/api/, ""),
   }),
 );
 

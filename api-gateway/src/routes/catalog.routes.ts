@@ -10,6 +10,7 @@ router.use(
   createProxyMiddleware({
     target: catalogServiceUrl,
     changeOrigin: true,
+    pathRewrite: (path, req: any) => req.originalUrl.replace(/^\/api/, ""),
   }),
 );
 
@@ -18,6 +19,7 @@ router.use(
   createProxyMiddleware({
     target: catalogServiceUrl,
     changeOrigin: true,
+    pathRewrite: (path, req: any) => req.originalUrl.replace(/^\/api/, ""),
   }),
 );
 

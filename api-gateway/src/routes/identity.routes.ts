@@ -10,6 +10,7 @@ router.use(
   createProxyMiddleware({
     target: identityServiceUrl,
     changeOrigin: true,
+    pathRewrite: (path, req: any) => req.originalUrl.replace(/^\/api/, ""),
   }),
 );
 
@@ -18,6 +19,7 @@ router.use(
   createProxyMiddleware({
     target: identityServiceUrl,
     changeOrigin: true,
+    pathRewrite: (path, req: any) => req.originalUrl.replace(/^\/api/, ""),
   }),
 );
 
@@ -26,6 +28,7 @@ router.use(
   createProxyMiddleware({
     target: identityServiceUrl,
     changeOrigin: true,
+    pathRewrite: (path, req: any) => req.originalUrl.replace(/^\/api/, ""),
   }),
 );
 
